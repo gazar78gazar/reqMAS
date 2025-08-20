@@ -1,0 +1,2661 @@
+{
+  "metadata": {
+    "version": "3.0",
+    "schema_version": "1.0",
+    "last_updated": "2025-01-30",
+    "compatibility": {
+      "min_agent_version": "2.0",
+      "max_agent_version": "3.x",
+      "constraint_definitions_version": "3.0"
+    },
+    "changelog": [
+      {
+        "version": "3.0",
+        "date": "2025-01-30",
+        "changes": [
+          "Changed strength scores from 1/10/100/1000 to 1-10 scale",
+          "Renamed constraint IDs removing _REQUIRED suffix",
+          "Updated relationship types (AND to ALL, XOR/MIN_OF to ANY_N)",
+          "Added safety and compliance fields to SSRs",
+          "Consolidated duplicate CSRs",
+          "Removed missing_constraints_todo section"
+        ]
+      }
+    ],
+    "description": "Complete requirement hierarchy with constraint relationships for Requirements MAS",
+    "created": "2025-01-01",
+    "total_use_cases": 12,
+    "total_sub_requirements": 21,
+    "total_sub_sub_requirements": 106,
+    "total_common_sub_requirements": 52
+  },
+
+  "use_cases": {
+    "UC1": {
+      "name": "Power Substation Management and Control",
+      "domain": "Energy & Utilities",
+      "safety_critical": true,
+      "sub_requirements": ["SR1_1", "SR1_2"]
+    },
+    "UC2": {
+      "name": "PV/Solar Array Monitoring and Control",
+      "domain": "Renewable Energy",
+      "safety_critical": false,
+      "sub_requirements": ["SR2_1", "SR2_2"]
+    },
+    "UC3": {
+      "name": "Motion Control Systems",
+      "domain": "Manufacturing",
+      "safety_critical": true,
+      "sub_requirements": ["SR3_1", "SR3_2"]
+    },
+    "UC4": {
+      "name": "Quality Control and Inspection Systems",
+      "domain": "Manufacturing",
+      "safety_critical": false,
+      "sub_requirements": ["SR4_1", "SR4_2"]
+    },
+    "UC5": {
+      "name": "Industrial Automation and OT Machinery Monitoring",
+      "domain": "Manufacturing",
+      "safety_critical": false,
+      "sub_requirements": ["SR5_1", "SR5_2"]
+    },
+    "UC6": {
+      "name": "Water Treatment and Environmental Monitoring",
+      "domain": "Water & Environment",
+      "safety_critical": true,
+      "sub_requirements": ["SR6_1", "SR6_2"]
+    },
+    "UC7": {
+      "name": "Transportation and Logistics",
+      "domain": "Transportation",
+      "safety_critical": true,
+      "sub_requirements": ["SR7_1", "SR7_2"]
+    },
+    "UC8": {
+      "name": "Building Automation and HVAC",
+      "domain": "Smart Buildings",
+      "safety_critical": false,
+      "sub_requirements": ["SR8_1"]
+    },
+    "UC9": {
+      "name": "Food and Beverage Manufacturing",
+      "domain": "Food & Beverage",
+      "safety_critical": true,
+      "sub_requirements": ["SR9_1"]
+    },
+    "UC10": {
+      "name": "Mining and Minerals Extraction",
+      "domain": "Mining",
+      "safety_critical": true,
+      "sub_requirements": ["SR10_1", "SR10_2"]
+    },
+    "UC11": {
+      "name": "IoT Edge Computing Platform",
+      "domain": "IoT/Industry 4.0",
+      "safety_critical": false,
+      "sub_requirements": ["SR11_1", "SR11_2"]
+    },
+    "UC12": {
+      "name": "Manufacturing Execution Systems (MES)",
+      "domain": "Manufacturing",
+      "safety_critical": false,
+      "sub_requirements": ["SR12_1", "SR12_2"]
+    }
+  },
+  
+  "sub_requirements": {
+    "SR1_1": {
+      "name": "Substation Equipment Monitoring",
+      "use_case": "UC1",
+      "sub_sub_requirements": ["SSR1_1_1", "SSR1_1_2", "SSR1_1_3", "SSR1_1_4"]
+    },
+    "SR1_2": {
+      "name": "Protection and Control Systems",
+      "use_case": "UC1",
+      "sub_sub_requirements": ["SSR1_2_1", "SSR1_2_2", "SSR1_2_3", "SSR1_2_4"]
+    },
+    "SR2_1": {
+      "name": "Remote Solar Monitoring",
+      "use_case": "UC2",
+      "sub_sub_requirements": ["SSR2_1_1", "SSR2_1_2", "SSR2_1_3", "SSR2_1_4"]
+    },
+    "SR2_2": {
+      "name": "Solar Performance Analytics",
+      "use_case": "UC2",
+      "sub_sub_requirements": ["SSR2_2_1", "SSR2_2_2"]
+    },
+    "SR3_1": {
+      "name": "Multi-Axis Motion Control",
+      "use_case": "UC3",
+      "sub_sub_requirements": ["SSR3_1_1", "SSR3_1_2", "SSR3_1_3"]
+    },
+    "SR3_2": {
+      "name": "Position and Feedback Systems",
+      "use_case": "UC3",
+      "sub_sub_requirements": ["SSR3_2_1", "SSR3_2_2"]
+    },
+    "SR4_1": {
+      "name": "Vision-Based Inspection",
+      "use_case": "UC4",
+      "sub_sub_requirements": ["SSR4_1_1", "SSR4_1_2", "SSR4_1_3", "SSR4_1_4", "SSR4_1_5"]
+    },
+    "SR4_2": {
+      "name": "AI-Based Defect Detection",
+      "use_case": "UC4",
+      "sub_sub_requirements": ["SSR4_2_1", "SSR4_2_2"]
+    },
+    "SR5_1": {
+      "name": "Industrial Protocol Gateway",
+      "use_case": "UC5",
+      "sub_sub_requirements": ["SSR5_1_1", "SSR5_1_2", "SSR5_1_3"]
+    },
+    "SR5_2": {
+      "name": "Vibration Monitoring",
+      "use_case": "UC5",
+      "sub_sub_requirements": ["SSR5_2_1", "SSR5_2_2", "SSR5_2_3"]
+    },
+    "SR6_1": {
+      "name": "Municipal Water Treatment",
+      "use_case": "UC6",
+      "sub_sub_requirements": ["SSR6_1_1", "SSR6_1_2", "SSR6_1_3"]
+    },
+    "SR6_2": {
+      "name": "Remote Site Water Monitoring",
+      "use_case": "UC6",
+      "sub_sub_requirements": ["SSR6_2_1", "SSR6_2_2"]
+    },
+    "SR7_1": {
+      "name": "Highway Weigh-in-Motion",
+      "use_case": "UC7",
+      "sub_sub_requirements": ["SSR7_1_1", "SSR7_1_2", "SSR7_1_3"]
+    },
+    "SR7_2": {
+      "name": "Cold Storage AGV",
+      "use_case": "UC7",
+      "sub_sub_requirements": ["SSR7_2_1", "SSR7_2_2", "SSR7_2_3"]
+    },
+    "SR8_1": {
+      "name": "BACnet Building Integration",
+      "use_case": "UC8",
+      "sub_sub_requirements": ["SSR8_1_1", "SSR8_1_2", "SSR8_1_3"]
+    },
+    "SR9_1": {
+      "name": "Hygienic Process Control",
+      "use_case": "UC9",
+      "sub_sub_requirements": ["SSR9_1_1", "SSR9_1_2", "SSR9_1_3", "SSR9_1_4"]
+    },
+    "SR10_1": {
+      "name": "Wellfield Monitoring",
+      "use_case": "UC10",
+      "sub_sub_requirements": ["SSR10_1_1", "SSR10_1_2", "SSR10_1_3"]
+    },
+    "SR10_2": {
+      "name": "Hazardous Area Applications",
+      "use_case": "UC10",
+      "sub_sub_requirements": ["SSR10_2_1", "SSR10_2_2"]
+    },
+    "SR11_1": {
+      "name": "Industrial IoT Gateway",
+      "use_case": "UC11",
+      "sub_sub_requirements": ["SSR11_1_1", "SSR11_1_2", "SSR11_1_3"]
+    },
+    "SR11_2": {
+      "name": "Edge AI Analytics",
+      "use_case": "UC11",
+      "sub_sub_requirements": ["SSR11_2_1", "SSR11_2_2"]
+    },
+    "SR12_1": {
+      "name": "Production Data Collection",
+      "use_case": "UC12",
+      "sub_sub_requirements": ["SSR12_1_1", "SSR12_1_2", "SSR12_1_3"]
+    },
+    "SR12_2": {
+      "name": "MES System Integration",
+      "use_case": "UC12",
+      "sub_sub_requirements": ["SSR12_2_1", "SSR12_2_2"]
+    }
+  },
+
+  "sub_sub_requirements": {
+    "SSR1_1_1": {
+      "name": "Real-Time Thermal Imaging",
+      "sub_requirement": "SR1_1",
+      "reasoning": "Early detection of hot spots prevents equipment failure worth millions",
+      "safety_critical": true,
+      "regulatory_compliance": ["IEC61850", "IEEE1613"],
+      "environmental_grade": "industrial",
+      "failure_mode": "critical",
+      "real_time_class": "soft",
+      "common_sub_requirements": ["CSR_PROCESSING_POWER_HIGH", "CSR_AI_PROCESSING", "CSR_VISION_INTERFACE"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_STORAGE_512GB",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_LATENCY_MAX_50MS",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_THROUGHPUT_MIN_30FPS",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_ACCURACY_MIN_98PCT",
+          "strength": "important",
+          "strength_score": 7
+        }
+      ]
+    },
+    
+    "SSR1_1_2": {
+      "name": "Compact Form Factor",
+      "sub_requirement": "SR1_1",
+      "reasoning": "Must fit within electrical cabinet constraints",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_COMPACT_DESIGN"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_DIN_RAIL_MOUNT",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR1_1_3": {
+      "name": "Environmental Protection",
+      "sub_requirement": "SR1_1",
+      "reasoning": "Substation environment with dust, moisture, and temperature extremes",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "industrial",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_OUTDOOR_HARDENED"],
+      "specific_constraints": []
+    },
+    
+    "SSR1_1_4": {
+      "name": "Mobile Platform Integration",
+      "sub_requirement": "SR1_1",
+      "reasoning": "Inspection robot deployment in substations",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "extended",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_MOBILE_PLATFORM", "CSR_COMPACT_DESIGN"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_CANBUS",
+          "strength": "recommended",
+          "strength_score": 4
+        }
+      ]
+    },
+    
+    "SSR1_2_1": {
+      "name": "Fast Protection Coordination",
+      "sub_requirement": "SR1_2",
+      "reasoning": "Breaker coordination requires <4ms response to prevent cascading failures",
+      "safety_critical": true,
+      "regulatory_compliance": ["IEC61850-3"],
+      "environmental_grade": "industrial",
+      "failure_mode": "critical",
+      "real_time_class": "hard",
+      "common_sub_requirements": ["CSR_REAL_TIME_1MS", "CSR_HIGH_AVAILABILITY"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_IEC61850_3",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR1_2_2": {
+      "name": "GOOSE Messaging",
+      "sub_requirement": "SR1_2",
+      "reasoning": "IEC 61850 substation automation standard requires GOOSE",
+      "safety_critical": true,
+      "regulatory_compliance": ["IEC61850"],
+      "environmental_grade": "industrial",
+      "failure_mode": "critical",
+      "real_time_class": "hard",
+      "common_sub_requirements": ["CSR_UTILITY_PROTOCOLS", "CSR_REAL_TIME"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_LATENCY_MAX_4MS",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+
+    "SSR1_2_3": {
+      "name": "Relay I/O Interface",
+      "sub_requirement": "SR1_2",
+      "reasoning": "Interface with protection relays and circuit breakers",
+      "safety_critical": true,
+      "regulatory_compliance": null,
+      "environmental_grade": "industrial",
+      "failure_mode": "critical",
+      "real_time_class": "hard",
+      "common_sub_requirements": ["CSR_DIGITAL_IO"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_DIGITAL_IO_MIN_32",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR1_2_4": {
+      "name": "Station Battery Monitoring",
+      "sub_requirement": "SR1_2",
+      "reasoning": "Monitor backup power system health",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_ANALOG_INPUT"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_ANALOG_IO_MIN_16",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR2_1_1": {
+      "name": "Solar Panel Telemetry",
+      "sub_requirement": "SR2_1",
+      "reasoning": "Remote sites require wireless and ultra-low power for solar operation",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "extended",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_SOLAR_COMPATIBLE", "CSR_WIRELESS_COMM", "CSR_IOT_PROTOCOLS"],
+      "specific_constraints": [],
+      "constraint_relationships": ["wireless_options"]
+    },
+    
+    "SSR2_1_2": {
+      "name": "Battery Management",
+      "sub_requirement": "SR2_1",
+      "reasoning": "Monitor and optimize battery charge cycles",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "extended",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_SOLAR_COMPATIBLE", "CSR_POWER_EFFICIENT"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_ANALOG_IO_MIN_8",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR2_1_3": {
+      "name": "Weather Station Integration",
+      "sub_requirement": "SR2_1",
+      "reasoning": "Correlate solar output with weather conditions",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "extended",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_WIRELESS_COMM", "CSR_SERIAL_COMM"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_SERIAL_PORTS_MIN_2",
+          "strength": "recommended",
+          "strength_score": 4
+        }
+      ]
+    },
+    
+    "SSR2_1_4": {
+      "name": "Environmental Hardening",
+      "sub_requirement": "SR2_1",
+      "reasoning": "Desert and outdoor deployment conditions",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "industrial",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_OUTDOOR_HARDENED", "CSR_POWER_EFFICIENT"],
+      "specific_constraints": []
+    },
+    
+    "SSR2_2_1": {
+      "name": "Solar Performance Analytics",
+      "sub_requirement": "SR2_2",
+      "reasoning": "AI-based optimization of solar farm efficiency",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_AI_PROCESSING", "CSR_EDGE_PROCESSING", "CSR_LARGE_SCALE_DATA"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_PROCESSOR_MIN_I5",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_STORAGE_1TB",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR2_2_2": {
+      "name": "Multi-Site Integration",
+      "sub_requirement": "SR2_2",
+      "reasoning": "Aggregate data from multiple solar installations",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_LARGE_SCALE_DATA", "CSR_IOT_PROTOCOLS"],
+      "specific_constraints": []
+    },
+    
+    "SSR3_1_1": {
+      "name": "Multi-Axis Coordination",
+      "sub_requirement": "SR3_1",
+      "reasoning": "Synchronized motion requires <1ms deterministic control for precision",
+      "safety_critical": true,
+      "regulatory_compliance": null,
+      "environmental_grade": "industrial",
+      "failure_mode": "critical",
+      "real_time_class": "hard",
+      "common_sub_requirements": ["CSR_PROCESSING_POWER_HIGH", "CSR_REAL_TIME_1MS", "CSR_FIELDBUS_PROTOCOLS"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_MEMORY_32GB",
+          "strength": "recommended",
+          "strength_score": 4
+        }
+      ],
+      "constraint_relationships": ["real_time_suite", "fieldbus_selection"]
+    },
+    
+    "SSR3_1_2": {
+      "name": "Trajectory Planning",
+      "sub_requirement": "SR3_1",
+      "reasoning": "Complex path calculations and motion profiles",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "soft",
+      "common_sub_requirements": ["CSR_PROCESSING_POWER_HIGH"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_STORAGE_TYPE_NVME",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR3_1_3": {
+      "name": "Safety Integration",
+      "sub_requirement": "SR3_1",
+      "reasoning": "Emergency stop and safety-rated I/O for personnel protection",
+      "safety_critical": true,
+      "regulatory_compliance": ["CE", "SIL2"],
+      "environmental_grade": "industrial",
+      "failure_mode": "critical",
+      "real_time_class": "hard",
+      "common_sub_requirements": ["CSR_DIGITAL_IO", "CSR_SAFETY"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_LATENCY_MAX_10MS",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR3_2_1": {
+      "name": "Encoder Feedback",
+      "sub_requirement": "SR3_2",
+      "reasoning": "High-resolution position feedback for closed-loop control",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "soft",
+      "common_sub_requirements": ["CSR_POSITION_FEEDBACK", "CSR_HIGH_SPEED_SAMPLING"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_DIGITAL_IO_MIN_16",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR3_2_2": {
+      "name": "I/O Response Time",
+      "sub_requirement": "SR3_2",
+      "reasoning": "Fast I/O for motion control feedback loops",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "soft",
+      "common_sub_requirements": ["CSR_DIGITAL_IO", "CSR_COST_OPTIMIZED"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_LATENCY_MAX_1MS",
+          "strength": "important",
+          "strength_score": 7
+        }
+      ]
+    },
+    "SSR4_1_1": {
+      "name": "Real-Time Image Analysis",
+      "sub_requirement": "SR4_1",
+      "reasoning": "Production line speed requires fast defect detection",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "soft",
+      "common_sub_requirements": ["CSR_PROCESSING_POWER_HIGH", "CSR_AI_PROCESSING", "CSR_VISION_INTERFACE"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_GPU_REQUIRED",
+          "strength": "important",
+          "strength_score": 7
+        },
+        {
+          "constraint_id": "CNST_LATENCY_MAX_100MS",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_THROUGHPUT_MIN_30FPS",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ],
+      "constraint_relationships": ["gpu_requirements"]
+    },
+    
+    "SSR4_1_2": {
+      "name": "Camera Integration",
+      "sub_requirement": "SR4_1",
+      "reasoning": "Multiple high-speed industrial cameras",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_VISION_INTERFACE"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_NETWORK_PORTS_MIN_3",
+          "strength": "recommended",
+          "strength_score": 4
+        }
+      ]
+    },
+    
+    "SSR4_1_3": {
+      "name": "Lighting Control",
+      "sub_requirement": "SR4_1",
+      "reasoning": "Synchronized strobe lighting for image capture",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "soft",
+      "common_sub_requirements": ["CSR_DIGITAL_IO"],
+      "specific_constraints": []
+    },
+    
+    "SSR4_1_4": {
+      "name": "MES Integration",
+      "sub_requirement": "SR4_1",
+      "reasoning": "Report defects to manufacturing execution system",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_MES_INTEGRATION", "CSR_IOT_PROTOCOLS"],
+      "specific_constraints": []
+    },
+    
+    "SSR4_1_5": {
+      "name": "Defect History",
+      "sub_requirement": "SR4_1",
+      "reasoning": "Track defect patterns for quality improvement",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_DATA_HISTORIAN"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_STORAGE_512GB",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR4_2_1": {
+      "name": "AI Defect Classification",
+      "sub_requirement": "SR4_2",
+      "reasoning": "Neural network inference for defect categorization",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "soft",
+      "common_sub_requirements": ["CSR_AI_PROCESSING"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_ACCURACY_MIN_98PCT",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR4_2_2": {
+      "name": "Real-Time Synchronization",
+      "sub_requirement": "SR4_2",
+      "reasoning": "Coordinate with production line timing",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "soft",
+      "common_sub_requirements": ["CSR_REAL_TIME"],
+      "specific_constraints": [],
+      "constraint_relationships": ["tsn_selection"]
+    },
+    
+    "SSR5_1_1": {
+      "name": "Multi-Protocol Gateway",
+      "sub_requirement": "SR5_1",
+      "reasoning": "Bridge between legacy and modern industrial protocols",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "industrial",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_MULTI_PROTOCOL", "CSR_FIELDBUS_PROTOCOLS", "CSR_INDUSTRIAL_ETHERNET"],
+      "specific_constraints": [],
+      "constraint_relationships": ["protocol_gateway_suite"]
+    },
+    
+    "SSR5_1_2": {
+      "name": "Legacy Device Integration",
+      "sub_requirement": "SR5_1",
+      "reasoning": "Connect older equipment with serial interfaces",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "industrial",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_SERIAL_COMM", "CSR_INDUSTRIAL_ETHERNET"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_SERIAL_PORTS_MIN_4",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR5_1_3": {
+      "name": "Data Aggregation",
+      "sub_requirement": "SR5_1",
+      "reasoning": "Collect and normalize data from multiple sources",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_DATA_AGGREGATION"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_THROUGHPUT_MIN_1000OPS",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR5_2_1": {
+      "name": "High-Speed Vibration Sampling",
+      "sub_requirement": "SR5_2",
+      "reasoning": "Capture vibration frequencies for predictive maintenance",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "industrial",
+      "failure_mode": "graceful",
+      "real_time_class": "soft",
+      "common_sub_requirements": ["CSR_HIGH_SPEED_SAMPLING", "CSR_PRECISION_ADC"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_SAMPLING_RATE_1_6MHZ",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_ANALOG_IO_MIN_8",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR5_2_2": {
+      "name": "FFT Analysis",
+      "sub_requirement": "SR5_2",
+      "reasoning": "Real-time frequency analysis for fault detection",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "soft",
+      "common_sub_requirements": ["CSR_SIGNAL_PROCESSING", "CSR_EDGE_PROCESSING"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_PROCESSOR_MIN_I5",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR5_2_3": {
+      "name": "Predictive Maintenance",
+      "sub_requirement": "SR5_2",
+      "reasoning": "AI-based failure prediction from vibration patterns",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_AI_PROCESSING", "CSR_DATA_HISTORIAN"],
+      "specific_constraints": []
+    },
+    
+    "SSR6_1_1": {
+      "name": "Water Quality Monitoring",
+      "sub_requirement": "SR6_1",
+      "reasoning": "Multiple parameters for regulatory compliance",
+      "safety_critical": true,
+      "regulatory_compliance": ["EPA", "ISO14001"],
+      "environmental_grade": "industrial",
+      "failure_mode": "critical",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_ANALOG_INPUT", "CSR_PRECISION_MEASUREMENT"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_ANALOG_IO_MIN_24",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_MEASUREMENT_ERROR_01PCT",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR6_1_2": {
+      "name": "Chemical Dosing Control",
+      "sub_requirement": "SR6_1",
+      "reasoning": "Precise chemical addition for water treatment",
+      "safety_critical": true,
+      "regulatory_compliance": ["EPA"],
+      "environmental_grade": "industrial",
+      "failure_mode": "critical",
+      "real_time_class": "soft",
+      "common_sub_requirements": ["CSR_ANALOG_OUTPUT", "CSR_REGULATORY_COMPLIANCE"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_ACCURACY_MIN_99PCT",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR6_1_3": {
+      "name": "SCADA Integration",
+      "sub_requirement": "SR6_1",
+      "reasoning": "Central monitoring and control of water treatment",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_SCADA_INTEGRATION", "CSR_HIGH_AVAILABILITY"],
+      "specific_constraints": []
+    },
+    
+    "SSR6_2_1": {
+      "name": "Solar-Powered Operation",
+      "sub_requirement": "SR6_2",
+      "reasoning": "Remote sites without grid power",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "extended",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_SOLAR_COMPATIBLE", "CSR_POWER_EFFICIENT"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_POWER_MAX_10W",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR6_2_2": {
+      "name": "Remote Telemetry",
+      "sub_requirement": "SR6_2",
+      "reasoning": "Satellite or cellular communication from remote locations",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "extended",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_WIRELESS_COMM"],
+      "specific_constraints": [],
+	"constraint_relationships": ["remote_comm_priority"]
+		}
+	},
+	"SSR7_1_1": {
+      "name": "High-Speed Vehicle Processing",
+      "sub_requirement": "SR7_1",
+      "reasoning": "Process vehicles at highway speeds without stopping",
+      "safety_critical": true,
+      "regulatory_compliance": ["DOT"],
+      "environmental_grade": "industrial",
+      "failure_mode": "critical",
+      "real_time_class": "hard",
+      "common_sub_requirements": ["CSR_PROCESSING_POWER_HIGH", "CSR_VISION_INTERFACE"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_LATENCY_MAX_50MS",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_GPU_REQUIRED",
+          "strength": "important",
+          "strength_score": 7
+        }
+      ]
+    },
+    
+    "SSR7_1_2": {
+      "name": "Weigh-in-Motion Sensors",
+      "sub_requirement": "SR7_1",
+      "reasoning": "High-speed weight measurement accuracy",
+      "safety_critical": true,
+      "regulatory_compliance": ["DOT", "NTEP"],
+      "environmental_grade": "industrial",
+      "failure_mode": "critical",
+      "real_time_class": "hard",
+      "common_sub_requirements": ["CSR_HIGH_SPEED_SAMPLING", "CSR_PRECISION_MEASUREMENT"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_SAMPLING_RATE_10KHZ",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_MEASUREMENT_ERROR_1PCT",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR7_1_3": {
+      "name": "License Plate Recognition",
+      "sub_requirement": "SR7_1",
+      "reasoning": "OCR for vehicle identification",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "extended",
+      "failure_mode": "graceful",
+      "real_time_class": "soft",
+      "common_sub_requirements": ["CSR_AI_PROCESSING", "CSR_VISION_INTERFACE"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_ACCURACY_MIN_95PCT",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR7_2_1": {
+      "name": "Cold Temperature Operation",
+      "sub_requirement": "SR7_2",
+      "reasoning": "Refrigerated warehouse environment",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "extended",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_EXTENDED_TEMP", "CSR_COMPACT_DESIGN"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_TEMP_INDUSTRIAL",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR7_2_2": {
+      "name": "AGV Platform Integration",
+      "sub_requirement": "SR7_2",
+      "reasoning": "Compact controller for automated guided vehicles",
+      "safety_critical": true,
+      "regulatory_compliance": ["CE"],
+      "environmental_grade": "industrial",
+      "failure_mode": "critical",
+      "real_time_class": "soft",
+      "common_sub_requirements": ["CSR_MOBILE_PLATFORM", "CSR_WIRELESS_COMM"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_BATTERY_RUNTIME_10H",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR7_2_3": {
+      "name": "Warehouse Navigation",
+      "sub_requirement": "SR7_2",
+      "reasoning": "Real-time path planning and obstacle avoidance",
+      "safety_critical": true,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "critical",
+      "real_time_class": "soft",
+      "common_sub_requirements": ["CSR_REAL_TIME", "CSR_WIRELESS_COMM"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_WIFI_5GHZ",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR8_1_1": {
+      "name": "BACnet Protocol Support",
+      "sub_requirement": "SR8_1",
+      "reasoning": "Building automation industry standard",
+      "safety_critical": false,
+      "regulatory_compliance": ["ASHRAE"],
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_BUILDING_AUTOMATION", "CSR_MULTI_PROTOCOL"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_BACNET",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR8_1_2": {
+      "name": "Large Point Count",
+      "sub_requirement": "SR8_1",
+      "reasoning": "Monitor hundreds of HVAC sensors and actuators",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_SCALABLE_IO"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_ANALOG_IO_MIN_16",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_DIGITAL_IO_MIN_64",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR8_1_3": {
+      "name": "Energy Management",
+      "sub_requirement": "SR8_1",
+      "reasoning": "Optimize HVAC energy consumption",
+      "safety_critical": false,
+      "regulatory_compliance": ["EnergyStar"],
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_ENERGY_MANAGEMENT"],
+      "specific_constraints": []
+    },
+    
+    "SSR9_1_1": {
+      "name": "Hygienic Design",
+      "sub_requirement": "SR9_1",
+      "reasoning": "Food safety requires washdown capability",
+      "safety_critical": true,
+      "regulatory_compliance": ["FDA", "USDA", "3A"],
+      "environmental_grade": "industrial",
+      "failure_mode": "critical",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_HYGIENIC_DESIGN"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_IP69K",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR9_1_2": {
+      "name": "Temperature Control",
+      "sub_requirement": "SR9_1",
+      "reasoning": "Precise temperature for food safety",
+      "safety_critical": true,
+      "regulatory_compliance": ["FDA", "HACCP"],
+      "environmental_grade": "industrial",
+      "failure_mode": "critical",
+      "real_time_class": "soft",
+      "common_sub_requirements": ["CSR_PRECISION_MEASUREMENT"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_MEASUREMENT_ERROR_01PCT",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR9_1_3": {
+      "name": "Regulatory Compliance",
+      "sub_requirement": "SR9_1",
+      "reasoning": "FDA and food safety regulations",
+      "safety_critical": true,
+      "regulatory_compliance": ["FDA", "USDA", "HACCP"],
+      "environmental_grade": "industrial",
+      "failure_mode": "critical",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_REGULATORY_COMPLIANCE", "CSR_HIGH_AVAILABILITY"],
+      "specific_constraints": []
+    },
+    
+    "SSR9_1_4": {
+      "name": "Product Traceability",
+      "sub_requirement": "SR9_1",
+      "reasoning": "Track ingredients through production",
+      "safety_critical": false,
+      "regulatory_compliance": ["FDA"],
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_TRACEABILITY", "CSR_DATA_HISTORIAN"],
+      "specific_constraints": []
+    },
+    
+    "SSR10_1_1": {
+      "name": "Wide Area Monitoring",
+      "sub_requirement": "SR10_1",
+      "reasoning": "Monitor distributed wells across large geographic area",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "extended",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_WIDE_AREA_NETWORK", "CSR_WIRELESS_COMM"],
+      "specific_constraints": [],
+      "constraint_relationships": ["long_range_comm"]
+    },
+    
+    "SSR10_1_2": {
+      "name": "Remote Equipment Control",
+      "sub_requirement": "SR10_1",
+      "reasoning": "Control pumps and valves at remote locations",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "extended",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_SERIAL_COMM", "CSR_DIGITAL_IO"],
+      "specific_constraints": []
+    },
+    
+    "SSR10_1_3": {
+      "name": "Solar/Battery Power",
+      "sub_requirement": "SR10_1",
+      "reasoning": "Remote sites without grid power",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "extended",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_SOLAR_COMPATIBLE", "CSR_POWER_EFFICIENT"],
+      "specific_constraints": []
+    },
+    
+    "SSR10_2_1": {
+      "name": "Explosion-Proof Design",
+      "sub_requirement": "SR10_2",
+      "reasoning": "Mining environment with explosive gases",
+      "safety_critical": true,
+      "regulatory_compliance": ["ATEX", "IECEx", "MSHA"],
+      "environmental_grade": "industrial",
+      "failure_mode": "catastrophic",
+      "real_time_class": "hard",
+      "common_sub_requirements": ["CSR_HAZARDOUS_AREA"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_ATEX_CERTIFIED",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_CLASS1_DIV2",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR10_2_2": {
+      "name": "Gas Detection",
+      "sub_requirement": "SR10_2",
+      "reasoning": "Monitor dangerous gas levels",
+      "safety_critical": true,
+      "regulatory_compliance": ["MSHA"],
+      "environmental_grade": "industrial",
+      "failure_mode": "catastrophic",
+      "real_time_class": "hard",
+      "common_sub_requirements": ["CSR_ANALOG_INPUT", "CSR_SAFETY"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_LATENCY_MAX_1MS",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR11_1_1": {
+      "name": "Universal Protocol Gateway",
+      "sub_requirement": "SR11_1",
+      "reasoning": "Connect diverse industrial devices to cloud",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_MULTI_PROTOCOL", "CSR_IOT_PROTOCOLS", "CSR_EDGE_PROCESSING"],
+      "specific_constraints": [],
+      "constraint_relationships": ["iot_protocol_suite"]
+    },
+    
+    "SSR11_1_2": {
+      "name": "Data Normalization",
+      "sub_requirement": "SR11_1",
+      "reasoning": "Convert various data formats to standard format",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_EDGE_PROCESSING", "CSR_DATA_AGGREGATION"],
+      "specific_constraints": []
+    },
+    
+    "SSR11_1_3": {
+      "name": "Cloud Connectivity",
+      "sub_requirement": "SR11_1",
+      "reasoning": "Secure connection to cloud platforms",
+      "safety_critical": false,
+      "regulatory_compliance": ["SOC2"],
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_IOT_PROTOCOLS", "CSR_SECURE_COMMUNICATION"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_ENCRYPTION_AES256",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR11_2_1": {
+      "name": "Edge Analytics",
+      "sub_requirement": "SR11_2",
+      "reasoning": "Process data locally to reduce cloud traffic",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "soft",
+      "common_sub_requirements": ["CSR_AI_PROCESSING", "CSR_EDGE_PROCESSING"],
+      "specific_constraints": []
+    },
+    
+    "SSR11_2_2": {
+      "name": "Local Decision Making",
+      "sub_requirement": "SR11_2",
+      "reasoning": "Autonomous operation when cloud unavailable",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "soft",
+      "common_sub_requirements": ["CSR_EDGE_PROCESSING", "CSR_LOCAL_PROCESSING"],
+      "specific_constraints": []
+    },
+    
+    "SSR12_1_1": {
+      "name": "Real-Time Production Monitoring",
+      "sub_requirement": "SR12_1",
+      "reasoning": "Track OEE and production metrics in real-time",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "soft",
+      "common_sub_requirements": ["CSR_EDGE_PROCESSING", "CSR_LARGE_SCALE_DATA"],
+      "specific_constraints": [
+        {
+          "constraint_id": "CNST_PROCESSOR_MIN_I5",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_STORAGE_1TB",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ]
+    },
+    
+    "SSR12_1_2": {
+      "name": "OEE Calculation",
+      "sub_requirement": "SR12_1",
+      "reasoning": "Calculate availability, performance, quality metrics",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_MES_INTEGRATION"],
+      "specific_constraints": []
+    },
+    
+    "SSR12_1_3": {
+      "name": "Machine Integration",
+      "sub_requirement": "SR12_1",
+      "reasoning": "Connect to diverse manufacturing equipment",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "industrial",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_MULTI_PROTOCOL", "CSR_INDUSTRIAL_ETHERNET"],
+      "specific_constraints": [],
+      "constraint_relationships": ["manufacturing_protocols"]
+    },
+    
+    "SSR12_2_1": {
+      "name": "Enterprise System Bridge",
+      "sub_requirement": "SR12_2",
+      "reasoning": "Connect shop floor to ERP/MES systems",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "none",
+      "common_sub_requirements": ["CSR_MES_INTEGRATION", "CSR_IT_SECURITY"],
+      "specific_constraints": []
+    },
+    
+    "SSR12_2_2": {
+      "name": "Data Synchronization",
+      "sub_requirement": "SR12_2",
+      "reasoning": "Real-time sync between OT and IT systems",
+      "safety_critical": false,
+      "regulatory_compliance": null,
+      "environmental_grade": "standard",
+      "failure_mode": "graceful",
+      "real_time_class": "soft",
+      "common_sub_requirements": ["CSR_REAL_TIME", "CSR_DATA_AGGREGATION"],
+      "specific_constraints": []
+    }
+  },
+
+  "common_sub_requirements": {
+    "CSR_PROCESSING_POWER_HIGH": {
+      "name": "High Processing Power",
+      "description": "Applications requiring significant computational resources",
+      "applies_to_ssrs": ["SSR1_1_1", "SSR3_1_1", "SSR4_1_1", "SSR7_1_1"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_PROCESSOR_MIN_I7",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_MEMORY_16GB",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ],
+      "incompatible_with": ["CSR_SOLAR_COMPATIBLE", "CSR_POWER_EFFICIENT"],
+      "compatible_components": {
+        "initial_filter": ["UNO-238v2", "UNO-148v2"],
+        "excluded": ["UNO-137v2"]
+      }
+    },
+    
+    "CSR_AI_PROCESSING": {
+      "name": "AI/ML Processing Capability",
+      "description": "Neural network inference and AI workloads",
+      "applies_to_ssrs": ["SSR1_1_1", "SSR2_2_1", "SSR4_1_1", "SSR4_2_1", "SSR5_2_3", "SSR11_2_1"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_PROCESSOR_MIN_I5",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_MEMORY_16GB",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_GPU_REQUIRED",
+          "strength": "important",
+          "strength_score": 7
+        },
+        {
+          "constraint_id": "CNST_STORAGE_TYPE_NVME",
+          "strength": "recommended",
+          "strength_score": 4
+        }
+      ],
+      "incompatible_with": ["CSR_SOLAR_COMPATIBLE", "CSR_POWER_EFFICIENT"],
+      "compatible_components": {
+        "initial_filter": ["UNO-238v2", "UNO-148v2"],
+        "excluded": ["UNO-137v2"]
+      }
+    },
+    
+    "CSR_REAL_TIME": {
+      "name": "Real-time Processing",
+      "description": "Low-latency deterministic operation",
+      "applies_to_ssrs": ["SSR1_1_1", "SSR1_2_1", "SSR3_1_1", "SSR7_2_3", "SSR12_2_2"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_PROCESSOR_MIN_I5",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_LATENCY_MAX_10MS",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_TSN_SUPPORT",
+          "strength": "recommended",
+          "strength_score": 4
+        }
+      ],
+      "incompatible_with": ["CSR_WIRELESS_ONLY"],
+      "compatible_components": {
+        "initial_filter": ["UNO-238v2", "UNO-148v2"],
+        "excluded": []
+      }
+    },
+    
+    "CSR_REAL_TIME_1MS": {
+      "name": "Ultra-low Latency Real-time",
+      "description": "Sub-millisecond deterministic response",
+      "applies_to_ssrs": ["SSR3_1_1", "SSR1_2_1"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_PROCESSOR_MIN_I7",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_LATENCY_MAX_1MS",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_TSN_SUPPORT",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_IEEE1588_PTP",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ],
+      "incompatible_with": ["CSR_WIRELESS_COMM", "CSR_WIRELESS_ONLY"],
+      "constraint_relationships": ["real_time_suite"],
+      "compatible_components": {
+        "initial_filter": ["UNO-148v2 with TSN", "UNO-238v2 with TSN"],
+        "excluded": ["UNO-137v2"]
+      }
+    },
+    
+    "CSR_WIRELESS_COMM": {
+      "name": "Wireless Communication",
+      "description": "WiFi or cellular connectivity required",
+      "applies_to_ssrs": ["SSR2_1_1", "SSR2_1_2", "SSR2_1_3", "SSR2_1_4", "SSR6_2_2", "SSR7_2_2", "SSR10_1_1"],
+      "implied_constraints": [
+        {
+          "constraint_id": "wireless_options",
+          "strength": "mandatory",
+          "strength_score": 10,
+          "relationship_ref": "wireless_options"
+        },
+        {
+          "constraint_id": "CNST_VPN",
+          "strength": "important",
+          "strength_score": 7
+        }
+      ],
+      "incompatible_with": ["CSR_REAL_TIME_1MS"],
+      "compatible_components": {
+        "initial_filter": ["Controllers with wireless modules"],
+        "excluded": []
+      }
+    },
+    
+    "CSR_SOLAR_COMPATIBLE": {
+      "name": "Solar/Battery Power Compatible",
+      "description": "Ultra-low power for off-grid operation",
+      "applies_to_ssrs": ["SSR2_1_1", "SSR2_1_2", "SSR6_2_1"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_POWER_MAX_10W",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_FANLESS",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ],
+      "incompatible_with": ["CSR_PROCESSING_POWER_HIGH", "CSR_AI_PROCESSING"],
+      "constraint_relationships": ["power_performance_mutex"],
+      "compatible_components": {
+        "initial_filter": ["ADAM-3600", "WISE-4600 series"],
+        "excluded": ["All UNO models"]
+      }
+    },
+
+    "CSR_FIELDBUS_PROTOCOLS": {
+      "name": "Fieldbus Communication",
+      "description": "High-speed deterministic fieldbus protocols",
+      "applies_to_ssrs": ["SSR3_1_1", "SSR3_1_2", "SSR5_1_1"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_PROFINET",
+          "strength": "recommended",
+          "strength_score": 4
+        },
+        {
+          "constraint_id": "CNST_ETHERCAT",
+          "strength": "recommended",
+          "strength_score": 4
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["Industrial controllers with fieldbus support"],
+        "excluded": []
+      }
+    },
+    
+    "CSR_INDUSTRIAL_ETHERNET": {
+      "name": "Industrial Ethernet Protocols",
+      "description": "Standard industrial Ethernet communication",
+      "applies_to_ssrs": ["SSR5_1_2", "SSR8_1_1", "SSR12_1_3"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_MODBUS_TCP",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_ETHERNET_IP",
+          "strength": "recommended",
+          "strength_score": 4
+        },
+        {
+          "constraint_id": "CNST_NETWORK_PORTS_MIN_2",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["All UNO models"],
+        "excluded": []
+      }
+    },
+    
+    "CSR_IOT_PROTOCOLS": {
+      "name": "IoT Communication Protocols",
+      "description": "Modern IoT and cloud connectivity",
+      "applies_to_ssrs": ["SSR2_1_1", "SSR4_1_4", "SSR11_1_1", "SSR11_1_2"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_MQTT",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_OPCUA",
+          "strength": "recommended",
+          "strength_score": 4
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["UNO-238v2", "UNO-148v2"],
+        "excluded": []
+      }
+    },
+    
+    "CSR_UTILITY_PROTOCOLS": {
+      "name": "Utility Industry Protocols",
+      "description": "Power and water utility communication standards",
+      "applies_to_ssrs": ["SSR1_2_2", "SSR6_1_3"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_IEC61850",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_DNP3",
+          "strength": "recommended",
+          "strength_score": 4
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["Utility-grade controllers"],
+        "excluded": []
+      }
+    },
+    
+    "CSR_OUTDOOR_HARDENED": {
+      "name": "Outdoor Environmental Protection",
+      "description": "Ruggedized for harsh outdoor environments",
+      "applies_to_ssrs": ["SSR1_1_3", "SSR2_1_4", "SSR7_2_1"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_TEMP_EXTENDED",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_IP54",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_FANLESS",
+          "strength": "recommended",
+          "strength_score": 4
+        },
+        {
+          "constraint_id": "CNST_VIBRATION_2G",
+          "strength": "recommended",
+          "strength_score": 4
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["Ruggedized models"],
+        "excluded": ["Office-grade equipment"]
+      }
+    },
+    
+    "CSR_POWER_EFFICIENT": {
+      "name": "Power Efficient Operation",
+      "description": "Optimized for low power consumption",
+      "applies_to_ssrs": ["SSR2_1_1", "SSR2_1_2", "SSR6_2_1", "SSR10_1_3"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_POWER_MAX_20W",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_PROCESSOR_MIN_ATOM",
+          "strength": "recommended",
+          "strength_score": 4
+        }
+      ],
+      "incompatible_with": ["CSR_PROCESSING_POWER_HIGH", "CSR_AI_PROCESSING"],
+      "compatible_components": {
+        "initial_filter": ["Low-power models"],
+        "excluded": ["High-performance models"]
+      }
+    },
+    
+    "CSR_HIGH_SPEED_SAMPLING": {
+      "name": "High-speed Data Acquisition",
+      "description": "Fast analog data sampling capabilities",
+      "applies_to_ssrs": ["SSR4_2_1", "SSR5_2_1", "SSR7_1_2"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_SAMPLING_RATE_100KHZ",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_ADC_RESOLUTION_16BIT",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["High-speed DAQ modules"],
+        "excluded": ["Standard I/O modules"]
+      }
+    },
+    
+    "CSR_MULTI_PROTOCOL": {
+      "name": "Multi-Protocol Support",
+      "description": "Support for multiple communication protocols",
+      "applies_to_ssrs": ["SSR5_1_1", "SSR8_1_1", "SSR11_1_1", "SSR12_1_3"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_MODBUS_TCP",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_MQTT",
+          "strength": "recommended",
+          "strength_score": 4
+        },
+        {
+          "constraint_id": "CNST_OPCUA",
+          "strength": "recommended",
+          "strength_score": 4
+        }
+      ],
+      "incompatible_with": [],
+      "constraint_relationships": ["industrial_protocols"],
+      "compatible_components": {
+        "initial_filter": ["Gateway-capable controllers"],
+        "excluded": []
+      }
+    },
+    
+    "CSR_VISION_INTERFACE": {
+      "name": "Vision System Interface",
+      "description": "Camera and vision system connectivity",
+      "applies_to_ssrs": ["SSR1_1_1", "SSR4_1_1", "SSR4_1_2", "SSR7_1_3"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_GIGABIT_ETHERNET",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_USB_PORTS_MIN_4",
+          "strength": "recommended",
+          "strength_score": 4
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["Vision-ready controllers"],
+        "excluded": []
+      }
+    },
+    
+    "CSR_EDGE_PROCESSING": {
+      "name": "Edge Computing Capabilities",
+      "description": "Local processing to reduce cloud dependency",
+      "applies_to_ssrs": ["SSR11_1_1", "SSR11_1_2", "SSR11_2_1", "SSR11_2_2", "SSR12_1_1"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_PROCESSOR_MIN_I5",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_MEMORY_8GB",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_STORAGE_256GB",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["UNO-238v2", "UNO-148v2"],
+        "excluded": ["UNO-137v2"]
+      }
+    },
+    
+    "CSR_HAZARDOUS_AREA": {
+      "name": "Hazardous Area Operation",
+      "description": "Explosion-proof and intrinsically safe design",
+      "applies_to_ssrs": ["SSR10_2_1", "SSR10_2_2"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_ATEX_CERTIFIED",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_CLASS1_DIV2",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_FANLESS",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_TEMP_EXTENDED",
+          "strength": "recommended",
+          "strength_score": 4
+        }
+      ],
+      "incompatible_with": ["CSR_PROCESSING_POWER_HIGH"],
+      "compatible_components": {
+        "initial_filter": ["ATEX-certified models"],
+        "excluded": ["Standard models"]
+      }
+    },
+    
+    "CSR_COMPACT_DESIGN": {
+      "name": "Compact Form Factor",
+      "description": "Space-constrained installations",
+      "applies_to_ssrs": ["SSR1_1_2", "SSR7_2_2"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_COMPACT_FORM",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ],
+      "incompatible_with": ["CSR_HIGH_IO_DENSITY"],
+      "compatible_components": {
+        "initial_filter": ["Compact models", "Embedded modules"],
+        "excluded": ["Full-size controllers"]
+      }
+    },
+    
+    "CSR_MOBILE_PLATFORM": {
+      "name": "Mobile Platform Integration",
+      "description": "Vehicle or robot mounting with vibration resistance",
+      "applies_to_ssrs": ["SSR1_1_4", "SSR7_2_2"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_VIBRATION_2G",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_POWER_MAX_20W",
+          "strength": "recommended",
+          "strength_score": 4
+        },
+        {
+          "constraint_id": "CNST_BATTERY_RUNTIME_8H",
+          "strength": "recommended",
+          "strength_score": 4
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["Mobile-rated controllers"],
+        "excluded": ["Desktop models"]
+      }
+    },
+    
+    "CSR_HIGH_AVAILABILITY": {
+      "name": "High Availability Configuration",
+      "description": "Redundancy and failover capabilities",
+      "applies_to_ssrs": ["SSR1_2_1", "SSR6_1_3", "SSR9_1_3"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_REDUNDANT_POWER",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_NETWORK_PORTS_MIN_2",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ],
+      "incompatible_with": [],
+      "constraint_relationships": ["redundancy_requirements"],
+      "compatible_components": {
+        "initial_filter": ["Enterprise-grade controllers"],
+        "excluded": ["Basic models"]
+      }
+    },
+    
+    "CSR_SERIAL_COMM": {
+      "name": "Serial Communication Interface",
+      "description": "RS-232/485/422 serial communication for legacy devices",
+      "applies_to_ssrs": ["SSR2_1_3", "SSR5_1_2", "SSR10_1_2"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_SERIAL_PORTS_MIN_2",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_MODBUS_RTU",
+          "strength": "recommended",
+          "strength_score": 4
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["All UNO models"],
+        "excluded": []
+      }
+    },
+    
+    "CSR_ANALOG_INPUT": {
+      "name": "Analog Input Acquisition",
+      "description": "Analog sensor measurement and monitoring",
+      "applies_to_ssrs": ["SSR1_2_4", "SSR2_1_2", "SSR6_1_1", "SSR10_2_2"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_ANALOG_IO_MIN_8",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_ADC_RESOLUTION_16BIT",
+          "strength": "recommended",
+          "strength_score": 4
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["ADAM analog modules"],
+        "excluded": []
+      }
+    },
+    
+    "CSR_DIGITAL_IO": {
+      "name": "Digital I/O Interface",
+      "description": "Digital input/output for control and monitoring",
+      "applies_to_ssrs": ["SSR1_2_3", "SSR3_1_1", "SSR3_1_3", "SSR3_2_2"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_DIGITAL_IO_MIN_16",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["All controllers with digital I/O"],
+        "excluded": []
+      }
+    },
+    
+    "CSR_LARGE_SCALE_DATA": {
+      "name": "Large-Scale Data Processing",
+      "description": "Processing and storing data from massive deployments",
+      "applies_to_ssrs": ["SSR2_2_1", "SSR2_2_2", "SSR12_1_1"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_STORAGE_1TB",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_MEMORY_16GB",
+          "strength": "recommended",
+          "strength_score": 4
+        }
+      ],
+      "incompatible_with": ["CSR_SOLAR_COMPATIBLE"],
+      "compatible_components": {
+        "initial_filter": ["High-capacity controllers"],
+        "excluded": ["Entry-level models"]
+      }
+    },
+    
+    "CSR_SAFETY": {
+      "name": "Machine Safety Integration",
+      "description": "Safety-rated I/O and emergency stop functions",
+      "applies_to_ssrs": ["SSR3_1_3", "SSR10_2_2"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_CE_CERTIFIED",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_LATENCY_MAX_10MS",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["Safety-rated controllers"],
+        "excluded": []
+      }
+    },
+    
+    "CSR_POSITION_FEEDBACK": {
+      "name": "High-Resolution Position Feedback",
+      "description": "Encoder and resolver interfaces for motion control",
+      "applies_to_ssrs": ["SSR3_2_1"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_DIGITAL_IO_MIN_16",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_SAMPLING_RATE_10KHZ",
+          "strength": "recommended",
+          "strength_score": 4
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["Motion control capable models"],
+        "excluded": []
+      }
+    },
+    
+    "CSR_COST_OPTIMIZED": {
+      "name": "Cost Optimized Solution",
+      "description": "Budget-conscious deployments",
+      "applies_to_ssrs": ["SSR3_2_2"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_PROCESSOR_MIN_ATOM",
+          "strength": "recommended",
+          "strength_score": 4
+        },
+        {
+          "constraint_id": "CNST_MEMORY_8GB",
+          "strength": "recommended",
+          "strength_score": 4
+        }
+      ],
+      "incompatible_with": ["CSR_PROCESSING_POWER_HIGH", "CSR_AI_PROCESSING"],
+      "compatible_components": {
+        "initial_filter": ["Entry-level models"],
+        "excluded": ["High-end models"]
+      }
+    },
+    
+    "CSR_MES_INTEGRATION": {
+      "name": "MES System Integration",
+      "description": "Manufacturing Execution System connectivity",
+      "applies_to_ssrs": ["SSR4_1_4", "SSR12_1_2", "SSR12_2_1"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_OPCUA",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_NETWORK_PORTS_MIN_2",
+          "strength": "recommended",
+          "strength_score": 4
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["Industrial controllers"],
+        "excluded": []
+      }
+    },
+    
+    "CSR_DATA_HISTORIAN": {
+      "name": "Data Historian Functionality",
+      "description": "Historical data storage and trending",
+      "applies_to_ssrs": ["SSR4_1_5", "SSR5_2_3", "SSR9_1_4"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_STORAGE_512GB",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_STORAGE_TYPE_SSD",
+          "strength": "recommended",
+          "strength_score": 4
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["Controllers with large storage"],
+        "excluded": ["Compact models"]
+      }
+    },
+    
+    "CSR_DATA_AGGREGATION": {
+      "name": "Data Aggregation and Normalization",
+      "description": "Collect and standardize data from multiple sources",
+      "applies_to_ssrs": ["SSR5_1_3", "SSR11_1_2", "SSR12_2_2"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_PROCESSOR_MIN_I3",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_MEMORY_8GB",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["Gateway-capable controllers"],
+        "excluded": []
+      }
+    },
+    
+    "CSR_SIGNAL_PROCESSING": {
+      "name": "Digital Signal Processing",
+      "description": "FFT and advanced signal analysis",
+      "applies_to_ssrs": ["SSR5_2_2"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_PROCESSOR_MIN_I5",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_MEMORY_16GB",
+          "strength": "recommended",
+          "strength_score": 4
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["High-performance controllers"],
+        "excluded": ["Entry-level models"]
+      }
+    },
+    
+    "CSR_PRECISION_ADC": {
+      "name": "Precision Analog Measurement",
+      "description": "High-accuracy analog data acquisition",
+      "applies_to_ssrs": ["SSR5_2_1"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_ADC_RESOLUTION_16BIT",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["Precision measurement modules"],
+        "excluded": ["Basic I/O modules"]
+      }
+    },
+    
+    "CSR_PRECISION_MEASUREMENT": {
+      "name": "High-Precision Measurement",
+      "description": "Sub-percent accuracy measurements",
+      "applies_to_ssrs": ["SSR6_1_1", "SSR7_1_2", "SSR9_1_2"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_ADC_RESOLUTION_24BIT",
+          "strength": "recommended",
+          "strength_score": 4
+        },
+        {
+          "constraint_id": "CNST_MEASUREMENT_ERROR_01PCT",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["Precision measurement capable"],
+        "excluded": []
+      }
+    },
+    
+    "CSR_ANALOG_OUTPUT": {
+      "name": "Analog Output Control",
+      "description": "Analog control signals for actuators",
+      "applies_to_ssrs": ["SSR6_1_2"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_ANALOG_IO_MIN_4",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["Analog output modules"],
+        "excluded": []
+      }
+    },
+    
+    "CSR_REGULATORY_COMPLIANCE": {
+      "name": "Regulatory Compliance",
+      "description": "Meet industry-specific regulations",
+      "applies_to_ssrs": ["SSR6_1_2", "SSR9_1_3"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_CE_CERTIFIED",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_UL_CERTIFIED",
+          "strength": "recommended",
+          "strength_score": 4
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["Certified models only"],
+        "excluded": []
+      }
+    },
+    
+    "CSR_SCADA_INTEGRATION": {
+      "name": "SCADA System Integration",
+      "description": "Supervisory control and data acquisition",
+      "applies_to_ssrs": ["SSR6_1_3"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_DNP3",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_IEC61850",
+          "strength": "recommended",
+          "strength_score": 4
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["SCADA-capable controllers"],
+        "excluded": []
+      }
+    },
+    
+    "CSR_BUILDING_AUTOMATION": {
+      "name": "Building Automation Integration",
+      "description": "HVAC and building control systems",
+      "applies_to_ssrs": ["SSR8_1_1"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_BACNET",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["BACnet-capable controllers"],
+        "excluded": []
+      }
+    },
+    
+    "CSR_SCALABLE_IO": {
+      "name": "Scalable I/O Architecture",
+      "description": "Expandable I/O for large systems",
+      "applies_to_ssrs": ["SSR8_1_2"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_MODBUS_TCP",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["Modular I/O systems"],
+        "excluded": ["Fixed I/O controllers"]
+      }
+    },
+    
+    "CSR_ENERGY_MANAGEMENT": {
+      "name": "Energy Management System",
+      "description": "Power monitoring and optimization",
+      "applies_to_ssrs": ["SSR8_1_3"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_MODBUS_TCP",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_ANALOG_IO_MIN_8",
+          "strength": "recommended",
+          "strength_score": 4
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["Power monitoring capable"],
+        "excluded": []
+      }
+    },
+    
+    "CSR_HYGIENIC_DESIGN": {
+      "name": "Food-Grade Hygienic Design",
+      "description": "Washdown and sanitary requirements",
+      "applies_to_ssrs": ["SSR9_1_1"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_IP69K",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["Hygienic enclosures"],
+        "excluded": ["Standard enclosures"]
+      }
+    },
+    
+    "CSR_TRACEABILITY": {
+      "name": "Product Traceability System",
+      "description": "Track and trace through production",
+      "applies_to_ssrs": ["SSR9_1_4"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_STORAGE_256GB",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["Database-capable controllers"],
+        "excluded": []
+      }
+    },
+    
+    "CSR_WIDE_AREA_NETWORK": {
+      "name": "Wide Area Network Coverage",
+      "description": "Long-range communication for distributed sites",
+      "applies_to_ssrs": ["SSR10_1_1"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_LTE",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_VPN",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ],
+      "incompatible_with": [],
+      "constraint_relationships": ["long_range_comm"],
+      "compatible_components": {
+        "initial_filter": ["Cellular-capable controllers"],
+        "excluded": []
+      }
+    },
+    
+    "CSR_SECURE_COMMUNICATION": {
+      "name": "Secure Communication",
+      "description": "Encrypted communication channels",
+      "applies_to_ssrs": ["SSR11_1_3"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_VPN",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_ENCRYPTION_AES256",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["Security-enabled controllers"],
+        "excluded": []
+      }
+    },
+    
+    "CSR_LOCAL_PROCESSING": {
+      "name": "Local Processing Capability",
+      "description": "Autonomous operation without cloud",
+      "applies_to_ssrs": ["SSR11_2_2"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_PROCESSOR_MIN_I3",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_STORAGE_256GB",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["Edge-capable controllers"],
+        "excluded": ["Cloud-only gateways"]
+      }
+    },
+    
+    "CSR_IT_SECURITY": {
+      "name": "IT Security Features",
+      "description": "Enterprise-grade security",
+      "applies_to_ssrs": ["SSR12_2_1"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_VPN",
+          "strength": "mandatory",
+          "strength_score": 10
+        },
+        {
+          "constraint_id": "CNST_CE_CERTIFIED",
+          "strength": "recommended",
+          "strength_score": 4
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["Enterprise controllers"],
+        "excluded": ["Basic models"]
+      }
+    },
+    
+    "CSR_EXTENDED_TEMP": {
+      "name": "Extended Temperature Range",
+      "description": "Operation in extreme temperatures",
+      "applies_to_ssrs": ["SSR7_2_1"],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_TEMP_EXTENDED",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ],
+      "incompatible_with": [],
+      "compatible_components": {
+        "initial_filter": ["Industrial temperature rated"],
+        "excluded": ["Commercial temperature only"]
+      }
+    },
+    
+    "CSR_WIRELESS_ONLY": {
+      "name": "Wireless-Only Communication",
+      "description": "No wired network connectivity",
+      "applies_to_ssrs": [],
+      "implied_constraints": [
+        {
+          "constraint_id": "wireless_options",
+          "strength": "mandatory",
+          "strength_score": 10,
+          "relationship_ref": "wireless_options"
+        }
+      ],
+      "incompatible_with": ["CSR_REAL_TIME", "CSR_REAL_TIME_1MS"],
+      "compatible_components": {
+        "initial_filter": ["Wireless-only controllers"],
+        "excluded": []
+      }
+    },
+    
+    "CSR_HIGH_IO_DENSITY": {
+      "name": "High I/O Density",
+      "description": "Maximum I/O channels in minimum space",
+      "applies_to_ssrs": [],
+      "implied_constraints": [
+        {
+          "constraint_id": "CNST_DIGITAL_IO_MIN_64",
+          "strength": "mandatory",
+          "strength_score": 10
+        }
+      ],
+      "incompatible_with": ["CSR_COMPACT_DESIGN"],
+      "compatible_components": {
+        "initial_filter": ["High-density I/O modules"],
+        "excluded": ["Compact controllers"]
+      }
+    }
+},
+
+  "constraint_relationships": {
+    "wireless_options": {
+      "type": "ANY_N",
+      "options": ["CNST_WIFI", "CNST_LTE", "CNST_5G"],
+      "minimum": 1,
+      "description": "Select one or more wireless technologies"
+    },
+    
+    "real_time_suite": {
+      "type": "ALL",
+      "required": ["CNST_TSN_SUPPORT", "CNST_IEEE1588_PTP", "CNST_GIGABIT_ETHERNET"],
+      "description": "All required for deterministic real-time communication"
+    },
+    
+    "storage_selection": {
+      "type": "ANY_N",
+      "options": ["CNST_STORAGE_TYPE_SATA", "CNST_STORAGE_TYPE_NVME", "CNST_STORAGE_TYPE_NVME_GEN4"],
+      "minimum": 1,
+      "maximum": 1,
+      "description": "Select exactly one storage type"
+    },
+    
+    "gpu_requirements": {
+      "type": "IF_THEN",
+      "if": "CNST_GPU_REQUIRED",
+      "then": ["CNST_PROCESSOR_MIN_I5", "CNST_MEMORY_16GB", "CNST_POWER_MAX_100W"],
+      "description": "GPU requires supporting infrastructure"
+    },
+    
+    "power_performance_mutex": {
+      "type": "MUTEX",
+      "exclusive_pairs": [
+        ["CNST_POWER_MAX_10W", "CNST_PROCESSOR_MIN_I7"],
+        ["CNST_POWER_MAX_10W", "CNST_GPU_REQUIRED"],
+        ["CNST_FANLESS", "CNST_PROCESSOR_MIN_I7"]
+      ],
+      "description": "Cannot combine ultra-low power with high performance"
+    },
+    
+    "redundancy_requirements": {
+      "type": "ANY_N",
+      "options": ["CNST_REDUNDANT_POWER", "CNST_NETWORK_PORTS_MIN_2", "CNST_STORAGE_TYPE_NVME"],
+      "minimum": 2,
+      "description": "High availability requires at least 2 redundancy features"
+    },
+    
+    "industrial_protocols": {
+      "type": "PRIORITY",
+      "ordered_options": [
+        "CNST_OPCUA",
+        "CNST_MODBUS_TCP",
+        "CNST_ETHERNET_IP",
+        "CNST_PROFINET"
+      ],
+      "description": "Preferred protocol order for industrial applications"
+    },
+    
+    "fieldbus_selection": {
+      "type": "ANY_N",
+      "options": ["CNST_PROFINET", "CNST_ETHERCAT", "CNST_ETHERNET_IP"],
+      "minimum": 1,
+      "description": "Select appropriate fieldbus for motion control"
+    },
+    
+    "tsn_selection": {
+      "type": "IF_THEN",
+      "if": "CNST_LATENCY_MAX_1MS",
+      "then": ["CNST_TSN_SUPPORT", "CNST_IEEE1588_PTP"],
+      "description": "Ultra-low latency requires TSN and time sync"
+    },
+    
+    "protocol_gateway_suite": {
+      "type": "ANY_N",
+      "options": ["CNST_MODBUS_TCP", "CNST_MODBUS_RTU", "CNST_OPCUA", 
+                  "CNST_MQTT", "CNST_PROFINET", "CNST_ETHERNET_IP"],
+      "minimum": 3,
+      "description": "Gateway must support at least 3 protocols"
+    },
+    
+    "remote_comm_priority": {
+      "type": "PRIORITY",
+      "ordered_options": [
+        "CNST_5G",
+        "CNST_LTE",
+        "CNST_WIFI"
+      ],
+      "description": "Cellular preferred for remote sites"
+    },
+    
+    "long_range_comm": {
+      "type": "ANY_N",
+      "options": ["CNST_LTE", "CNST_5G"],
+      "minimum": 1,
+      "maximum": 1,
+      "description": "Long-range cellular required"
+    },
+    
+    "iot_protocol_suite": {
+      "type": "ALL",
+      "required": ["CNST_MQTT", "CNST_OPCUA"],
+      "description": "Both required for IoT gateway"
+    },
+    
+    "manufacturing_protocols": {
+      "type": "ANY_N",
+      "options": ["CNST_OPCUA", "CNST_ETHERNET_IP", "CNST_MODBUS_TCP"],
+      "minimum": 2,
+      "description": "Support multiple machine types"
+    }
+  },
+
+  "summary": {
+    "total_use_cases": 12,
+    "total_sub_requirements": 21,
+    "total_sub_sub_requirements": 106,
+    "total_common_sub_requirements": 52,
+    "constraint_relationships_defined": 14,
+    "consolidations_performed": [
+      "CSR_COMM_PROTOCOLS merged into CSR_MULTI_PROTOCOL",
+      "CSR_POWER_MGMT and CSR_POWER_LOW merged into CSR_POWER_EFFICIENT"
+    ],
+    "new_csrs_added": [
+      "CSR_FIELDBUS_PROTOCOLS",
+      "CSR_INDUSTRIAL_ETHERNET",
+      "CSR_IOT_PROTOCOLS",
+      "CSR_UTILITY_PROTOCOLS",
+      "CSR_OUTDOOR_HARDENED",
+      "CSR_HIGH_AVAILABILITY",
+      "CSR_SECURE_COMMUNICATION"
+    ],
+    "constraint_strength_levels": {
+      "mandatory": {
+        "score": 10,
+        "description": "Must have - complete filtering if not satisfied"
+      },
+      "important": {
+        "score": 7,
+        "description": "Highly recommended - significant penalty if not satisfied"
+      },
+      "recommended": {
+        "score": 4,
+        "description": "Nice to have - minor penalty if not satisfied"
+      },
+      "optional": {
+        "score": 2,
+        "description": "Consider if budget allows"
+      }
+    },
+    "agent_instructions": {
+      "requirement_matching": "Match user input to UC→SR→SSR hierarchy",
+      "constraint_collection": "Aggregate SSR specific_constraints + CSR implied_constraints",
+      "relationship_processing": "Apply constraint_relationships (ALL, ANY_N, PRIORITY, IF_THEN, MUTEX)",
+      "conflict_detection": "Check CSR incompatible_with and constraint_relationships MUTEX",
+      "strength_application": "Use strength_score for constraint prioritization",
+      "output_generation": "Produce final constraint set as specifications"
+    }
+  }
+}

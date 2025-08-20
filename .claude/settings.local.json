@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m pytest tests/test_integration.py::test_blackboard_operations -v)",
+      "Bash(python:*)",
+      "Bash(rm:*)",
+      "Bash(mkdir:*)",
+      "Bash(pip install:*)",
+      "Bash(curl:*)",
+      "Bash(grep:*)",
+      "Bash(sed:*)",
+      "Bash(taskkill:*)",
+      "Bash(cmd /c:*)"
+    ],
+    "defaultMode": "acceptEdits"
+  }
+}

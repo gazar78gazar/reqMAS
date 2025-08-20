@@ -1,0 +1,895 @@
+{
+  "metadata": {
+    "version": "3.2",
+    "created": "2025-01-30",
+    "last_updated": "2025-01-30",
+    "description": "Complete constraint and CSR coverage for industrial IoT systems with restored commercial fields",
+    "total_fields": 49,
+    "supports_bi_directional_dependencies": true,
+    "supports_multi_solution_types": true,
+    "changelog": [
+      {
+        "version": "3.2",
+        "date": "2025-01-30",
+        "changes": [
+          "Moved 5 fields from commercial to notes: powerCostSensitivity, targetAvailability, integrationComplexity, systemCriticality, deploymentScale",
+          "Restored 4 original commercial fields: totalBudget, deliveryTimeframe, warrantyRequirements, shippingIncoterms",
+          "Preserved all mappings and data structure integrity"
+        ]
+      }
+    ]
+  },
+
+  "section_titles": {
+  "performance_computing": "Performance",
+  "io_connectivity": "I/O & Connectivity",
+  "power_environment": "Environment",
+  "commercial": "Terms & Conditions"
+},
+
+  "priority_system": {
+    "must_fields": ["digitalIO", "analogIO", "budgetPerUnit", "quantity", "networkPorts"],
+    "priority_levels": {
+      "1": {
+        "fields": ["digitalIO", "analogIO", "budgetPerUnit", "quantity", "networkPorts"],
+        "weight": 0.5,
+        "effort": "high",
+        "questionStyle": "detailed_probing",
+        "description": "Critical for hardware selection and I/O configuration"
+      },
+      "2": {
+        "fields": ["wirelessExtension", "deliveryTimeframe", "processorTier", "memoryCapacity", "realTimeRequirement"],
+        "weight": 0.25,
+        "effort": "medium",
+        "questionStyle": "clarifying_questions",
+        "description": "Important for performance and connectivity"
+      },
+      "3": {
+        "fields": ["processingThroughput", "samplingRate", "operatingTemperature", "ingressProtection", "serialPorts"],
+        "weight": 0.15,
+        "effort": "low",
+        "questionStyle": "quick_confirmation",
+        "description": "Standard requirements for capacity and environment"
+      },
+      "4": {
+        "fields": ["displayPorts", "usbPorts", "certifications", "vibrationResistance", "shockProtection", "supportLevel", "storageType", "operatingSystem", "totalBudget", "warrantyRequirements", "shippingIncoterms"],
+        "weight": 0.1,
+        "effort": "minimal",
+        "questionStyle": "optional_nice_to_have",
+        "description": "Optional specifications for optimization"
+      }
+    }
+  },
+
+  "solution_types": {
+    "controller_pcs_io_gateways": {
+      "name": "Controller PCs & I/O Gateways",
+      "active": true,
+      "sections": ["performance_computing", "io_connectivity", "power_environment", "commercial"]
+    }
+  },
+
+  "field_definitions": {
+    "performance_computing": {
+      "processorTier": {
+        "type": "dropdown",
+        "label": "Processor Performance Tier",
+        "required": false,
+        "options_source": "static",
+        "options": [
+          "Entry (Intel Atom)",
+          "Standard (Intel Core i3)",
+          "Performance (Intel Core i5)",
+          "Premium (Intel Core i7)",
+          "Efficient (Intel U300E)",
+          "Any"
+        ],
+        "autofill_default": "Standard (Intel Core i3)",
+        "maps_to_constraints": ["CNST_PROCESSOR_MIN_ATOM", "CNST_PROCESSOR_MIN_I3", "CNST_PROCESSOR_MIN_I5", "CNST_PROCESSOR_MIN_I7"],
+        "maps_to_csrs": ["CSR_PROCESSING_POWER_HIGH", "CSR_COST_OPTIMIZED"]
+      },
+      
+      "memoryCapacity": {
+        "type": "dropdown",
+        "label": "Memory Capacity",
+        "required": false,
+        "options_source": "static",
+        "options": ["4GB", "8GB", "16GB", "32GB", "64GB"],
+        "autofill_default": "8GB",
+        "maps_to_constraints": ["CNST_MEMORY_4GB", "CNST_MEMORY_8GB", "CNST_MEMORY_16GB", "CNST_MEMORY_32GB", "CNST_MEMORY_64GB"],
+        "maps_to_csrs": ["CSR_AI_PROCESSING", "CSR_EDGE_PROCESSING"]
+      },
+      
+      "memoryType": {
+        "type": "dropdown",
+        "label": "Memory Type",
+        "required": false,
+        "options_source": "static",
+        "options": ["DDR4", "DDR5", "Any"],
+        "autofill_default": "Any"
+      },
+      
+      "storageCapacity": {
+        "type": "dropdown",
+        "label": "Storage Capacity",
+        "required": false,
+        "options_source": "static",
+        "options": ["64GB", "128GB", "256GB", "512GB", "1TB", "2TB"],
+        "autofill_default": "256GB",
+        "maps_to_constraints": ["CNST_STORAGE_64GB", "CNST_STORAGE_128GB", "CNST_STORAGE_256GB", "CNST_STORAGE_512GB", "CNST_STORAGE_1TB", "CNST_STORAGE_2TB"],
+        "maps_to_csrs": ["CSR_DATA_HISTORIAN", "CSR_LARGE_SCALE_DATA"]
+      },
+      
+      "storageType": {
+        "type": "dropdown",
+        "label": "Storage Technology",
+        "required": false,
+        "options_source": "static",
+        "options": ["SATA SSD", "NVMe", "NVMe Gen4", "Any"],
+        "autofill_default": "NVMe",
+        "maps_to_constraints": ["CNST_STORAGE_SATA", "CNST_STORAGE_NVME", "CNST_STORAGE_TYPE_NVME_GEN4"]
+      },
+      
+      "aiAcceleration": {
+        "type": "dropdown",
+        "label": "AI/GPU Acceleration",
+        "required": false,
+        "options_source": "static",
+        "options": ["None", "Intel Xe Graphics", "Dedicated GPU Required"],
+        "autofill_default": "None",
+        "maps_to_constraints": ["CNST_GPU_REQUIRED", "CNST_INTEL_XE_GPU"],
+        "maps_to_csrs": ["CSR_AI_PROCESSING", "CSR_VISION_INTERFACE"]
+      },
+      
+      "displayPorts": {
+        "type": "dropdown",
+        "label": "Display Ports",
+        "required": false,
+        "options_source": "static",
+        "options": ["None", "1x Display Port", "2x Display Ports", "1x HDMI + 1x DP", "Any"],
+        "autofill_default": "Any"
+      },
+      
+      "operatingSystem": {
+        "type": "dropdown",
+        "label": "Operating System",
+        "required": false,
+        "options_source": "static",
+        "options": [
+          "Windows 10 IoT Enterprise",
+          "Windows 11 IoT Enterprise",
+          "Ubuntu Linux 20.04 LTS",
+          "Ubuntu Linux 22.04 LTS",
+          "Real-Time Linux",
+          "Any"
+        ],
+        "autofill_default": "Any",
+        "maps_to_csrs": ["CSR_REAL_TIME", "CSR_REAL_TIME_1MS"]
+      },
+      
+      "realTimeRequirement": {
+        "type": "dropdown",
+        "label": "Real-Time Classification",
+        "required": false,
+        "options_source": "static",
+        "options": [
+          "Hard Real-Time (<1ms deterministic)",
+          "Fast Real-Time (<4ms)",
+          "Standard Real-Time (<10ms)",
+          "Near Real-Time (<20ms)",
+          "Interactive (<50ms)",
+          "Responsive (<100ms)",
+          "Non Real-Time (Best effort)"
+        ],
+        "autofill_default": "Non Real-Time (Best effort)",
+        "maps_to_constraints": ["CNST_LATENCY_MAX_1MS", "CNST_LATENCY_MAX_4MS", "CNST_LATENCY_MAX_10MS", "CNST_LATENCY_MAX_20MS", "CNST_LATENCY_MAX_50MS", "CNST_LATENCY_MAX_100MS"],
+        "maps_to_csrs": ["CSR_REAL_TIME", "CSR_REAL_TIME_1MS"]
+      },
+      
+      "processingThroughput": {
+        "type": "dropdown",
+        "label": "Processing Throughput",
+        "required": false,
+        "options_source": "static",
+        "options": [
+          "Not Critical",
+          "Standard (<30 fps / <1000 ops/s)",
+          "High (30-60 fps / 1000-10000 ops/s)",
+          "Very High (>60 fps / >10000 ops/s)"
+        ],
+        "autofill_default": "Not Critical",
+        "maps_to_constraints": ["CNST_THROUGHPUT_MIN_30FPS", "CNST_THROUGHPUT_MIN_60FPS", "CNST_THROUGHPUT_MIN_1000OPS"],
+        "maps_to_csrs": ["CSR_PROCESSING_POWER_HIGH"]
+      },
+      
+      "accuracyRequirements": {
+        "type": "dropdown",
+        "label": "System Accuracy/Precision",
+        "required": false,
+        "options_source": "static",
+        "options": [
+          "Not Critical",
+          "Standard (>95%)",
+          "High (>98%)",
+          "Very High (>99%)",
+          "Ultra-precise (<0.1% error)"
+        ],
+        "autofill_default": "Not Critical",
+        "maps_to_constraints": ["CNST_ACCURACY_MIN_95PCT", "CNST_ACCURACY_MIN_98PCT", "CNST_ACCURACY_MIN_99PCT", "CNST_MEASUREMENT_ERROR_1PCT", "CNST_MEASUREMENT_ERROR_01PCT"],
+        "maps_to_csrs": ["CSR_PRECISION_MEASUREMENT"]
+      },
+      
+      "edgeProcessingCapabilities": {
+        "type": "multi-select",
+        "label": "Edge Processing & Autonomy Requirements",
+        "required": false,
+        "options_source": "static",
+        "options": [
+          "None (Cloud Dependent)",
+          "Store & Forward",
+          "Local Control Logic",
+          "FFT/Vibration Analysis",
+          "AI/ML Inference",
+          "Real-time Analytics",
+          "Autonomous Operation"
+        ],
+        "autofill_default": ["None (Cloud Dependent)"],
+        "maps_to_csrs": ["CSR_LOCAL_PROCESSING", "CSR_EDGE_PROCESSING", "CSR_SIGNAL_PROCESSING", "CSR_DATA_AGGREGATION"]
+      }
+    },
+
+    "io_connectivity": {
+      "digitalIO": {
+        "type": "number",
+        "label": "Digital I/O Channels *",
+        "required": true,
+        "min": 0,
+        "max": 128,
+        "placeholder": "0-128 channels",
+        "maps_to_constraints": ["CNST_DIGITAL_IO_MIN_16", "CNST_DIGITAL_IO_MIN_32", "CNST_DIGITAL_IO_MIN_64"],
+        "maps_to_csrs": ["CSR_DIGITAL_IO", "CSR_POSITION_FEEDBACK"]
+      },
+      
+      "analogIO": {
+        "type": "number",
+        "label": "Analog I/O Channels *",
+        "required": true,
+        "min": 0,
+        "max": 128,
+        "placeholder": "0-128 channels",
+        "maps_to_constraints": ["CNST_ANALOG_IO_MIN_4", "CNST_ANALOG_IO_MIN_8", "CNST_ANALOG_IO_MIN_16", "CNST_ANALOG_IO_MIN_24"],
+        "maps_to_csrs": ["CSR_ANALOG_INPUT", "CSR_ANALOG_OUTPUT"]
+      },
+      
+      "samplingRate": {
+        "type": "dropdown",
+        "label": "Data Sampling Rate",
+        "required": false,
+        "options_source": "static",
+        "options": [
+          "Not Required",
+          "10 kHz",
+          "100 kHz",
+          "1 MHz",
+          "1.6 MHz"
+        ],
+        "autofill_default": "Not Required",
+        "maps_to_constraints": ["CNST_SAMPLING_RATE_10KHZ", "CNST_SAMPLING_RATE_100KHZ", "CNST_SAMPLING_RATE_1MHZ", "CNST_SAMPLING_RATE_1_6MHZ"],
+        "maps_to_csrs": ["CSR_HIGH_SPEED_SAMPLING"]
+      },
+      
+      "adcResolution": {
+        "type": "dropdown",
+        "label": "ADC Resolution",
+        "required": false,
+        "options_source": "static",
+        "options": ["Not Required", "16-bit", "24-bit"],
+        "autofill_default": "Not Required",
+        "maps_to_constraints": ["CNST_ADC_RESOLUTION_16BIT", "CNST_ADC_RESOLUTION_24BIT"],
+        "maps_to_csrs": ["CSR_PRECISION_ADC", "CSR_PRECISION_MEASUREMENT"]
+      },
+      
+      "networkPorts": {
+        "type": "dropdown",
+        "label": "Ethernet Ports (RJ45) *",
+        "required": true,
+        "options_source": "static",
+        "options": ["1 x RJ45", "2 x RJ45", "3 x RJ45", "4+ x RJ45"],
+        "autofill_default": "2 x RJ45",
+        "maps_to_constraints": ["CNST_NETWORK_PORTS_MIN_1", "CNST_NETWORK_PORTS_MIN_2", "CNST_NETWORK_PORTS_MIN_3"],
+        "maps_to_csrs": ["CSR_INDUSTRIAL_ETHERNET", "CSR_HIGH_AVAILABILITY"]
+      },
+      
+      "ethernetSpeed": {
+        "type": "dropdown",
+        "label": "Minimum Ethernet Speed",
+        "required": false,
+        "options_source": "static",
+        "options": [
+          "100 Mbps (Fast Ethernet)",
+          "1 Gbps (Gigabit Ethernet)",
+          "10 Gbps (10-Gigabit)",
+          "Any"
+        ],
+        "autofill_default": "Any",
+        "maps_to_constraints": ["CNST_GIGABIT_ETHERNET"]
+      },
+      
+      "serialPorts": {
+        "type": "dropdown",
+        "label": "Serial Ports (RS-232/422/485)",
+        "required": false,
+        "options_source": "static",
+        "options": ["None", "2x RS-232/422/485", "4x RS-232/422/485", "Any"],
+        "autofill_default": "Any",
+        "maps_to_constraints": ["CNST_SERIAL_PORTS_MIN_2", "CNST_SERIAL_PORTS_MIN_4"],
+        "maps_to_csrs": ["CSR_SERIAL_COMM"]
+      },
+      
+      "usbPorts": {
+        "type": "dropdown",
+        "label": "USB Ports",
+        "required": false,
+        "options_source": "static",
+        "options": ["None", "4x USB", "6x USB", "Any"],
+        "autofill_default": "Any",
+        "maps_to_constraints": ["CNST_USB_PORTS_MIN_4", "CNST_USB_PORTS_MIN_6"]
+      },
+      
+      "canBusSupport": {
+        "type": "dropdown",
+        "label": "CAN Bus Support",
+        "required": false,
+        "options_source": "static",
+        "options": ["Not Required", "1 Port", "2 Ports"],
+        "autofill_default": "Not Required",
+        "maps_to_constraints": ["CNST_CANBUS"],
+        "maps_to_csrs": ["CSR_MOBILE_PLATFORM"]
+      },
+      
+      "wirelessExtension": {
+        "type": "multi-select",
+        "label": "Wireless Connectivity",
+        "required": false,
+        "options_source": "static",
+        "options": ["None", "WiFi", "LTE", "5G", "LoRa"],
+        "autofill_default": ["None"],
+        "maps_to_constraints": ["CNST_WIFI", "CNST_LTE", "CNST_5G"],
+        "maps_to_csrs": ["CSR_WIRELESS_COMM", "CSR_WIDE_AREA_NETWORK"]
+      },
+      
+      "ethernetProtocols": {
+        "type": "multi-select",
+        "label": "Ethernet-Based Protocols",
+        "required": false,
+        "options_source": "static",
+        "options": [
+          "None",
+          "Modbus TCP",
+          "OPC UA",
+          "MQTT",
+          "BACnet/IP",
+          "PROFINET",
+          "EtherCAT",
+          "Ethernet/IP"
+        ],
+        "autofill_default": ["None"],
+        "maps_to_constraints": ["CNST_MODBUS_TCP", "CNST_OPCUA", "CNST_MQTT", "CNST_BACNET", "CNST_PROFINET", "CNST_ETHERCAT", "CNST_ETHERNET_IP"],
+        "maps_to_csrs": ["CSR_INDUSTRIAL_ETHERNET", "CSR_IOT_PROTOCOLS", "CSR_FIELDBUS_PROTOCOLS", "CSR_MULTI_PROTOCOL"]
+      },
+      
+      "serialProtocols": {
+        "type": "multi-select",
+        "label": "Serial-Based Protocols",
+        "required": false,
+        "options_source": "static",
+        "options": [
+          "None",
+          "Modbus RTU",
+          "Modbus ASCII",
+          "BACnet MS/TP"
+        ],
+        "autofill_default": ["None"],
+        "maps_to_constraints": ["CNST_MODBUS_RTU"],
+        "maps_to_csrs": ["CSR_SERIAL_COMM", "CSR_MULTI_PROTOCOL"]
+      },
+      
+      "fieldbusProtocols": {
+        "type": "multi-select",
+        "label": "Fieldbus Protocols",
+        "required": false,
+        "options_source": "static",
+        "options": [
+          "None",
+          "CANopen",
+          "DeviceNet",
+          "PROFIBUS"
+        ],
+        "autofill_default": ["None"],
+        "maps_to_csrs": ["CSR_FIELDBUS_PROTOCOLS"]
+      },
+      
+      "utilityProtocols": {
+        "type": "multi-select",
+        "label": "Utility/Energy Protocols",
+        "required": false,
+        "options_source": "static",
+        "options": ["None", "IEC 61850", "DNP3", "IEC 60870-5"],
+        "autofill_default": ["None"],
+        "maps_to_constraints": ["CNST_IEC61850", "CNST_DNP3"],
+        "maps_to_csrs": ["CSR_UTILITY_PROTOCOLS", "CSR_SCADA_INTEGRATION"]
+      },
+      
+      "deterministicFeatures": {
+        "type": "multi-select",
+        "label": "Deterministic Network Features",
+        "required": false,
+        "options_source": "static",
+        "options": [
+          "None",
+          "TSN (Time-Sensitive Networking)",
+          "IEEE 1588 PTP",
+          "Hardware Timestamping"
+        ],
+        "autofill_default": ["None"],
+        "maps_to_constraints": ["CNST_TSN_SUPPORT", "CNST_IEEE1588_PTP"],
+        "maps_to_csrs": ["CSR_REAL_TIME_1MS"]
+      },
+      
+      "securityCompliance": {
+        "type": "multi-select",
+        "label": "Security & Regulatory Requirements",
+        "required": false,
+        "options_source": "static",
+        "options": [
+          "None",
+          "VPN Support",
+          "AES-256 Encryption",
+          "FDA 21 CFR Part 11",
+          "Audit Trail/Traceability",
+          "User Authentication",
+          "Data Integrity"
+        ],
+        "autofill_default": ["None"],
+        "maps_to_constraints": ["CNST_VPN", "CNST_ENCRYPTION_AES256"],
+        "maps_to_csrs": ["CSR_SECURE_COMMUNICATION", "CSR_IT_SECURITY", "CSR_TRACEABILITY"]
+      }
+    },
+
+    "power_environment": {
+      "powerConsumption": {
+        "type": "dropdown",
+        "label": "Maximum Power Consumption",
+        "required": false,
+        "options_source": "static",
+        "options": [
+          "≤10W (Solar/Battery)",
+          "≤20W (Low Power)",
+          "≤50W (Standard)",
+          "≤100W (High Performance)",
+          "No Limit"
+        ],
+        "autofill_default": "No Limit",
+        "maps_to_constraints": ["CNST_POWER_MAX_10W", "CNST_POWER_MAX_20W", "CNST_POWER_MAX_50W", "CNST_POWER_MAX_100W"],
+        "maps_to_csrs": ["CSR_POWER_EFFICIENT", "CSR_SOLAR_COMPATIBLE"]
+      },
+      
+      "powerRedundancy": {
+        "type": "dropdown",
+        "label": "Power Supply Redundancy",
+        "required": false,
+        "options_source": "static",
+        "options": [
+          "Single Power Supply",
+          "Dual Redundant Power",
+          "N+1 Redundancy"
+        ],
+        "autofill_default": "Single Power Supply",
+        "maps_to_constraints": ["CNST_REDUNDANT_POWER"],
+        "maps_to_csrs": ["CSR_HIGH_AVAILABILITY"]
+      },
+      
+      "operatingTemperature": {
+        "type": "dropdown",
+        "label": "Operating Temperature Range",
+        "required": false,
+        "options_source": "static",
+        "options": [
+          "Commercial (0°C to 50°C)",
+          "Extended (-20°C to 60°C)",
+          "Industrial (-40°C to 70°C)",
+          "Extreme (-40°C to 85°C)"
+        ],
+        "autofill_default": "Commercial (0°C to 50°C)",
+        "maps_to_constraints": ["CNST_TEMP_STANDARD", "CNST_TEMP_EXTENDED", "CNST_TEMP_INDUSTRIAL"],
+        "maps_to_csrs": ["CSR_OUTDOOR_HARDENED", "CSR_EXTENDED_TEMP"]
+      },
+      
+      "humidity": {
+        "type": "dropdown",
+        "label": "Humidity Tolerance",
+        "required": false,
+        "options_source": "static",
+        "options": [
+          "Standard (10-90% RH non-condensing)",
+          "Extended (5-95% RH non-condensing)",
+          "Industrial (5-95% RH @ 40°C)",
+          "Condensing Allowed (100% RH)"
+        ],
+        "autofill_default": "Standard (10-90% RH non-condensing)"
+      },
+      
+      "ingressProtection": {
+        "type": "dropdown",
+        "label": "Ingress Protection (IP) Rating",
+        "required": false,
+        "options_source": "static",
+        "options": [
+          "IP20 (Indoor, no protection)",
+          "IP40 (Dust protected)",
+          "IP54 (Dust/splash resistant)",
+          "IP65 (Dust tight, water jets)",
+          "IP67 (Dust tight, temporary immersion)",
+          "IP69K (High-pressure/steam washdown)"
+        ],
+        "autofill_default": "IP20 (Indoor, no protection)",
+        "maps_to_constraints": ["CNST_IP20", "CNST_IP40", "CNST_IP54", "CNST_IP65", "CNST_IP67", "CNST_IP69K"],
+        "maps_to_csrs": ["CSR_OUTDOOR_HARDENED", "CSR_HYGIENIC_DESIGN"]
+      },
+      
+      "vibrationResistance": {
+        "type": "dropdown",
+        "label": "Vibration Resistance",
+        "required": false,
+        "options_source": "static",
+        "options": [
+          "Office/Desktop (No requirement)",
+          "Industrial (2G, 5-500Hz)",
+          "Mobile/Vehicle (5G, 5-500Hz)",
+          "Severe (10G, MIL-STD-810)"
+        ],
+        "autofill_default": "Office/Desktop (No requirement)",
+        "maps_to_constraints": ["CNST_VIBRATION_2G", "CNST_VIBRATION_5G"],
+        "maps_to_csrs": ["CSR_MOBILE_PLATFORM"]
+      },
+      
+      "shockProtection": {
+        "type": "dropdown",
+        "label": "Shock Protection",
+        "required": false,
+        "options_source": "static",
+        "options": [
+          "Standard (10G, 11ms)",
+          "Industrial (30G, 11ms)",
+          "Rugged (50G, 11ms)",
+          "Military (100G, MIL-STD-810)"
+        ],
+        "autofill_default": "Standard (10G, 11ms)"
+      },
+      
+      "mountingType": {
+        "type": "dropdown",
+        "label": "Mounting Method",
+        "required": false,
+        "options_source": "static",
+        "options": [
+          "DIN Rail",
+          "19-inch Rack",
+          "Panel/Wall Mount",
+          "Desktop/Bench",
+          "Embedded/OEM",
+          "Any"
+        ],
+        "autofill_default": "Any",
+        "maps_to_constraints": ["CNST_DIN_RAIL_MOUNT", "CNST_RACK_MOUNT"],
+        "maps_to_csrs": ["CSR_COMPACT_DESIGN"]
+      },
+      
+      "coolingMethod": {
+        "type": "dropdown",
+        "label": "Cooling Requirements",
+        "required": false,
+        "options_source": "static",
+        "options": [
+          "Fanless (Passive)",
+          "Fan Cooled (Active)",
+          "Extended Heatsink",
+          "Any"
+        ],
+        "autofill_default": "Any",
+        "maps_to_constraints": ["CNST_FANLESS"],
+        "maps_to_csrs": ["CSR_OUTDOOR_HARDENED"]
+      },
+      
+      "formFactor": {
+        "type": "dropdown",
+        "label": "Form Factor",
+        "required": false,
+        "options_source": "static",
+        "options": [
+          "Ultra Compact (<100mm)",
+          "Compact (100-200mm)",
+          "Standard (200-300mm)",
+          "Large (>300mm)",
+          "No Restriction"
+        ],
+        "autofill_default": "No Restriction",
+        "maps_to_constraints": ["CNST_COMPACT_FORM"],
+        "maps_to_csrs": ["CSR_COMPACT_DESIGN", "CSR_MOBILE_PLATFORM"]
+      },
+      
+      "certifications": {
+        "type": "multi-select",
+        "label": "Required Certifications",
+        "required": false,
+        "options_source": "static",
+        "options": [
+          "CE (Europe)",
+          "FCC Part 15 (USA)",
+          "UL/cUL (Safety)",
+          "CCC (China)",
+          "BSMI (Taiwan)",
+          "Class I Division 2",
+          "ATEX",
+          "IECEx",
+          "IEC 61850-3",
+          "EN 50155",
+          "FDA/3-A (Food)",
+          "MSHA (Mining)"
+        ],
+        "autofill_default": ["CE (Europe)", "FCC Part 15 (USA)"],
+        "maps_to_constraints": ["CNST_CE_CERTIFIED", "CNST_UL_CERTIFIED", "CNST_ATEX_CERTIFIED", "CNST_CLASS1_DIV2", "CNST_IEC61850_3", "CNST_EN50155"],
+        "maps_to_csrs": ["CSR_REGULATORY_COMPLIANCE", "CSR_HAZARDOUS_AREA", "CSR_HYGIENIC_DESIGN"]
+      },
+      
+      "hazardousAreaRating": {
+        "type": "multi-select",
+        "label": "Hazardous Area Classifications",
+        "required": false,
+        "options_source": "static",
+        "options": [
+          "None Required",
+          "Class I Division 2 (Gas/Vapor)",
+          "ATEX Zone 2 (Gas)",
+          "ATEX Zone 22 (Dust)",
+          "IECEx",
+          "MSHA (Mining)"
+        ],
+        "autofill_default": ["None Required"],
+        "maps_to_constraints": ["CNST_ATEX_CERTIFIED", "CNST_CLASS1_DIV2"],
+        "maps_to_csrs": ["CSR_HAZARDOUS_AREA"]
+      }
+    },
+
+    "commercial": {
+      "budgetPerUnit": {
+        "type": "dropdown",
+        "label": "Budget per Unit *",
+        "required": true,
+        "options_source": "static",
+        "options": [
+          "Entry (<$1,000)",
+          "Standard ($1,000-2,000)",
+          "Performance ($2,000-3,500)",
+          "Premium ($3,500-5,000)",
+          "Enterprise (>$5,000)"
+        ],
+        "autofill_default": "Standard ($1,000-2,000)",
+        "maps_to_csrs": ["CSR_COST_OPTIMIZED"],
+        "dependencies": {
+          "affects": [],
+          "affected_by": [],
+          "clear_dependents_on_change": false
+        }
+      },
+      
+      "totalBudget": {
+        "type": "text",
+        "label": "Total Budget",
+        "required": false,
+        "placeholder": "e.g., $10,000-50,000",
+        "dependencies": {
+          "affects": [],
+          "affected_by": [],
+          "auto_calculate": false,
+          "calculation": ""
+        }
+      },
+      
+      "quantity": {
+        "type": "number",
+        "label": "Quantity *",
+        "required": true,
+        "min": 1,
+        "max": 1000,
+        "placeholder": "1-1000 units",
+        "dependencies": {
+          "affects": [],
+          "affected_by": [],
+          "auto_calculate": false,
+          "calculation": ""
+        }
+      },
+      
+      "deliveryTimeframe": {
+        "type": "date",
+        "label": "Delivery Timeframe",
+        "required": false,
+        "autofill_default": ""
+      },
+      
+      "deliveryUrgency": {
+        "type": "dropdown",
+        "label": "Delivery Requirements",
+        "required": false,
+        "options_source": "static",
+        "options": [
+          "Stock Required (<2 weeks)",
+          "Standard (4-8 weeks)",
+          "Planned (3-6 months)",
+          "Project-Based (6-12 months)"
+        ],
+        "autofill_default": "Standard (4-8 weeks)"
+      },
+      
+      "warrantyRequirements": {
+        "type": "dropdown",
+        "label": "Warranty Requirements",
+        "required": false,
+        "options_source": "static",
+        "options": ["1 year standard", "2 years extended", "3 years premium"],
+        "autofill_default": "1 year standard"
+      },
+      
+      "shippingIncoterms": {
+        "type": "dropdown",
+        "label": "Shipping Incoterms",
+        "required": false,
+        "options_source": "static",
+        "options": ["FOB Origin", "CIF", "DDP", "EXW"],
+        "autofill_default": "FOB Origin"
+      },
+      
+      "supportLevel": {
+        "type": "dropdown",
+        "label": "Support Requirements",
+        "required": false,
+        "options_source": "static",
+        "options": [
+          "Basic (Business hours, email)",
+          "Standard (Business hours, phone)",
+          "Premium (24/7 support)",
+          "Critical (24/7 with SLA)"
+        ],
+        "autofill_default": "Standard (Business hours, phone)"
+      }
+    }
+  },
+
+  "field_notes": {
+    "moved_to_notes": {
+      "description": "These fields were moved from form fields to notes for agent consideration",
+      "fields": {
+        "powerCostSensitivity": {
+          "note": "Consider power cost sensitivity - Grid powered, Moderate rates, High (Remote/generator), or Critical (Solar/battery)",
+          "maps_to_csrs": ["CSR_POWER_EFFICIENT", "CSR_SOLAR_COMPATIBLE"]
+        },
+        "targetAvailability": {
+          "note": "System availability requirements - Standard (95%), High (99%), Very High (99.9%), or Continuous (99.99%)",
+          "maps_to_csrs": ["CSR_HIGH_AVAILABILITY"]
+        },
+        "integrationComplexity": {
+          "note": "Integration complexity - Standalone, Simple (Single protocol), Moderate (Multiple protocols), Complex (Custom development), or Very Complex (Multi-vendor)",
+          "maps_to_csrs": ["CSR_MULTI_PROTOCOL", "CSR_MES_INTEGRATION"]
+        },
+        "systemCriticality": {
+          "note": "System criticality level - Non-Critical (Monitoring only), Important (Production support), Critical (Production control), Safety-Critical (Life safety), or Mission-Critical (Infrastructure)",
+          "maps_to_csrs": ["CSR_HIGH_AVAILABILITY", "CSR_SAFETY", "CSR_REGULATORY_COMPLIANCE"]
+        },
+        "deploymentScale": {
+          "note": "Deployment scale - Pilot/POC (1-5 units), Small (6-25 units), Medium (26-100 units), Large (101-500 units), or Enterprise (>500 units)",
+          "maps_to_csrs": ["CSR_SCALABLE_IO", "CSR_LARGE_SCALE_DATA"]
+        }
+      }
+    }
+  },
+
+  "field_to_csr_summary": {
+    "performance_computing": {
+      "total_fields": 11,
+      "maps_to_csrs": [
+        "CSR_PROCESSING_POWER_HIGH",
+        "CSR_AI_PROCESSING",
+        "CSR_EDGE_PROCESSING",
+        "CSR_DATA_HISTORIAN",
+        "CSR_LARGE_SCALE_DATA",
+        "CSR_REAL_TIME",
+        "CSR_REAL_TIME_1MS",
+        "CSR_PRECISION_MEASUREMENT",
+        "CSR_COST_OPTIMIZED",
+        "CSR_VISION_INTERFACE",
+        "CSR_LOCAL_PROCESSING",
+        "CSR_SIGNAL_PROCESSING",
+        "CSR_DATA_AGGREGATION"
+      ]
+    },
+    "io_connectivity": {
+      "total_fields": 16,
+      "maps_to_csrs": [
+        "CSR_DIGITAL_IO",
+        "CSR_ANALOG_INPUT",
+        "CSR_ANALOG_OUTPUT",
+        "CSR_HIGH_SPEED_SAMPLING",
+        "CSR_PRECISION_ADC",
+        "CSR_SERIAL_COMM",
+        "CSR_WIRELESS_COMM",
+        "CSR_INDUSTRIAL_ETHERNET",
+        "CSR_IOT_PROTOCOLS",
+        "CSR_FIELDBUS_PROTOCOLS",
+        "CSR_MULTI_PROTOCOL",
+        "CSR_UTILITY_PROTOCOLS",
+        "CSR_SCADA_INTEGRATION",
+        "CSR_WIDE_AREA_NETWORK",
+        "CSR_POSITION_FEEDBACK",
+        "CSR_MOBILE_PLATFORM",
+        "CSR_SECURE_COMMUNICATION",
+        "CSR_IT_SECURITY",
+        "CSR_TRACEABILITY"
+      ]
+    },
+    "power_environment": {
+      "total_fields": 12,
+      "maps_to_csrs": [
+        "CSR_POWER_EFFICIENT",
+        "CSR_SOLAR_COMPATIBLE",
+        "CSR_HIGH_AVAILABILITY",
+        "CSR_OUTDOOR_HARDENED",
+        "CSR_EXTENDED_TEMP",
+        "CSR_HYGIENIC_DESIGN",
+        "CSR_MOBILE_PLATFORM",
+        "CSR_COMPACT_DESIGN",
+        "CSR_REGULATORY_COMPLIANCE",
+        "CSR_HAZARDOUS_AREA"
+      ]
+    },
+    "commercial": {
+      "total_fields": 8,
+      "maps_to_csrs": [
+        "CSR_COST_OPTIMIZED"
+      ]
+    },
+    "notes_fields": {
+      "total_fields": 5,
+      "maps_to_csrs": [
+        "CSR_POWER_EFFICIENT",
+        "CSR_SOLAR_COMPATIBLE",
+        "CSR_HIGH_AVAILABILITY",
+        "CSR_MULTI_PROTOCOL",
+        "CSR_MES_INTEGRATION",
+        "CSR_SAFETY",
+        "CSR_REGULATORY_COMPLIANCE",
+        "CSR_SCALABLE_IO",
+        "CSR_LARGE_SCALE_DATA"
+      ]
+    }
+  },
+
+  "data_integrity_check": {
+    "total_sections": 4,
+    "total_active_fields": 49,
+    "total_notes": 5,
+    "all_constraint_mappings_valid": true,
+    "all_csr_mappings_valid": true,
+    "field_consistency": {
+      "all_required_fields_marked": true,
+      "all_defaults_defined": true,
+      "all_options_complete": true
+    },
+    "commercial_section_validation": {
+      "restored_fields": ["totalBudget", "deliveryTimeframe", "warrantyRequirements", "shippingIncoterms"],
+      "moved_to_notes": ["powerCostSensitivity", "targetAvailability", "integrationComplexity", "systemCriticality", "deploymentScale"],
+      "total_commercial_fields": 8,
+      "total_commercial_notes": 5
+    }
+  }
+}

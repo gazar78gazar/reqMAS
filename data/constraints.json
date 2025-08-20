@@ -1,0 +1,1024 @@
+{
+  "metadata": {
+    "version": "3.1",
+    "schema_version": "1.0",
+    "description": "Complete constraint definitions for Requirements MAS",
+    "created": "2025-01-01",
+    "last_updated": "2025-01-30",
+    "total_constraints": 97,
+    "total_conflicts": 15,
+    "changelog": [
+      {
+        "version": "3.0",
+        "date": "2025-01-30",
+        "changes": [
+          "Added missing protocol constraints (PROFINET, EtherCAT, Ethernet/IP, DNP3)",
+          "Added storage type constraints (SSD, NVMe, SATA)",
+          "Removed _REQUIRED suffix from all protocol constraints",
+          "Added units to all measurable constraints",
+          "Added enhanced processor constraints with implied requirements"
+        ]
+      },
+      {
+        "version": "3.1",
+        "date": "2025-01-30",
+        "changes": [
+          "Added missing IP rating constraints (IP20, IP40, IP54, IP67)",
+          "Added missing vibration constraint (CNST_VIBRATION_2G)",
+          "Added missing storage constraints (CNST_STORAGE_2TB)",
+          "Added missing power constraint (CNST_POWER_MAX_100W)",
+          "Added missing memory constraint (CNST_MEMORY_64GB)"
+        ]
+      }
+    ]
+  },
+
+  "term_standardization": {
+    "processor": ["cpu", "processor_model", "processorType", "cpu_model"],
+    "memory": ["ram", "ram_size", "memoryCapacity", "memory_capacity"],
+    "storage_capacity": ["storage", "storage_size", "disk_size"],
+    "storage_type": ["storageType", "storage_media", "disk_type"],
+    "network_ports": ["ethernet_ports", "networkPorts", "lan_ports", "rj45_ports"],
+    "serial_ports": ["com_ports", "serialPorts", "rs232_ports"],
+    "digital_io": ["digitalIO", "digital_inputs_outputs", "dio_channels"],
+    "analog_io": ["analogIO", "analog_inputs_outputs", "aio_channels"],
+    "temperature_range": ["operatingTemperature", "temp_range", "operating_temp"],
+    "power_consumption": ["power", "power_watts", "powerConsumption", "power_budget"],
+    "response_latency": ["latency", "response_time", "processing_delay"],
+    "sampling_rate": ["sample_rate", "acquisition_rate", "sampling_frequency"],
+    "ingress_protection": ["ip_rating", "environmental_protection", "enclosure_rating"]
+  },
+
+  "constraints_pool": {
+    "comment": "Constraints are organized by category for easier navigation",
+    
+    "processor_constraints": {
+      "CNST_PROCESSOR_MIN_ATOM": {
+        "type": "component",
+        "parameter": "processor",
+        "operator": "min",
+        "value": "Intel Atom",
+        "tier": 1,
+        "unit": "tier"
+      },
+      "CNST_PROCESSOR_MIN_I3": {
+        "type": "component",
+        "parameter": "processor",
+        "operator": "min",
+        "value": "Intel Core i3",
+        "tier": 2,
+        "unit": "tier"
+      },
+      "CNST_PROCESSOR_MIN_I5": {
+        "type": "component",
+        "parameter": "processor",
+        "operator": "min",
+        "value": "Intel Core i5",
+        "tier": 3,
+        "unit": "tier"
+      },
+      "CNST_PROCESSOR_MIN_I7": {
+        "type": "component",
+        "parameter": "processor",
+        "operator": "min",
+        "value": "Intel Core i7",
+        "tier": 4,
+        "unit": "tier"
+      },
+      "CNST_PROCESSOR_U300E": {
+        "type": "component",
+        "parameter": "processor",
+        "operator": "exact",
+        "value": "Intel U300E",
+        "tier": 0,
+        "unit": "tier"
+      },
+      "CNST_CPU_I7_PERF": {
+        "type": "component",
+        "parameter": "processor",
+        "operator": "min",
+        "value": "Intel Core i7",
+        "tier": 4,
+        "unit": "tier",
+        "implied_requirements": {
+          "memory_type": "DDR4",
+          "memory_min_gb": 16,
+          "storage_type": "NVMe",
+          "storage_min_gb": 512
+        }
+      },
+      "CNST_CPU_I5_PERF": {
+        "type": "component",
+        "parameter": "processor",
+        "operator": "min",
+        "value": "Intel Core i5",
+        "tier": 3,
+        "unit": "tier",
+        "implied_requirements": {
+          "memory_type": "DDR4",
+          "memory_min_gb": 8,
+          "storage_type": ["SATA_SSD", "NVMe"],
+          "storage_min_gb": 256
+        }
+      }
+    },
+
+    "memory_constraints": {
+      "CNST_MEMORY_4GB": {
+        "type": "component",
+        "parameter": "memory",
+        "operator": "min",
+        "value": 4,
+        "unit": "GB"
+      },
+      "CNST_MEMORY_8GB": {
+        "type": "component",
+        "parameter": "memory",
+        "operator": "min",
+        "value": 8,
+        "unit": "GB"
+      },
+      "CNST_MEMORY_16GB": {
+        "type": "component",
+        "parameter": "memory",
+        "operator": "min",
+        "value": 16,
+        "unit": "GB"
+      },
+      "CNST_MEMORY_32GB": {
+        "type": "component",
+        "parameter": "memory",
+        "operator": "min",
+        "value": 32,
+        "unit": "GB"
+      },
+      "CNST_MEMORY_64GB": {
+        "type": "component",
+        "parameter": "memory",
+        "operator": "min",
+        "value": 64,
+        "unit": "GB"
+      }
+    },
+
+    "storage_constraints": {
+      "CNST_STORAGE_64GB": {
+        "type": "component",
+        "parameter": "storage_capacity",
+        "operator": "min",
+        "value": 64,
+        "unit": "GB"
+      },
+      "CNST_STORAGE_128GB": {
+        "type": "component",
+        "parameter": "storage_capacity",
+        "operator": "min",
+        "value": 128,
+        "unit": "GB"
+      },
+      "CNST_STORAGE_256GB": {
+        "type": "component",
+        "parameter": "storage_capacity",
+        "operator": "min",
+        "value": 256,
+        "unit": "GB"
+      },
+      "CNST_STORAGE_512GB": {
+        "type": "component",
+        "parameter": "storage_capacity",
+        "operator": "min",
+        "value": 512,
+        "unit": "GB"
+      },
+      "CNST_STORAGE_1TB": {
+        "type": "component",
+        "parameter": "storage_capacity",
+        "operator": "min",
+        "value": 1024,
+        "unit": "GB"
+      },
+      "CNST_STORAGE_2TB": {
+        "type": "component",
+        "parameter": "storage_capacity",
+        "operator": "min",
+        "value": 2048,
+        "unit": "GB"
+      },
+      "CNST_STORAGE_SPEED_500MBS": {
+        "type": "component",
+        "parameter": "storage_speed",
+        "operator": "min",
+        "value": 500,
+        "unit": "MB/s"
+      }
+    },
+
+    "storage_type_constraints": {
+      "CNST_STORAGE_SSD": {
+        "type": "component",
+        "parameter": "storage_type",
+        "operator": "exact",
+        "value": "SSD"
+      },
+      "CNST_STORAGE_NVME": {
+        "type": "component",
+        "parameter": "storage_type",
+        "operator": "exact",
+        "value": "NVMe"
+      },
+      "CNST_STORAGE_SATA": {
+        "type": "component",
+        "parameter": "storage_type",
+        "operator": "exact",
+        "value": "SATA"
+      },
+      "CNST_STORAGE_TYPE_NVME": {
+        "type": "component",
+        "parameter": "storage_type",
+        "operator": "exact",
+        "value": "NVMe"
+      },
+      "CNST_STORAGE_TYPE_NVME_GEN4": {
+        "type": "component",
+        "parameter": "storage_type",
+        "operator": "exact",
+        "value": "NVMe Gen4"
+      }
+    },
+
+    "power_constraints": {
+      "CNST_POWER_MAX_10W": {
+        "type": "component",
+        "parameter": "power_consumption",
+        "operator": "max",
+        "value": 10,
+        "unit": "W"
+      },
+      "CNST_POWER_MAX_20W": {
+        "type": "component",
+        "parameter": "power_consumption",
+        "operator": "max",
+        "value": 20,
+        "unit": "W"
+      },
+      "CNST_POWER_MAX_50W": {
+        "type": "component",
+        "parameter": "power_consumption",
+        "operator": "max",
+        "value": 50,
+        "unit": "W"
+      },
+      "CNST_POWER_MAX_100W": {
+        "type": "component",
+        "parameter": "power_consumption",
+        "operator": "max",
+        "value": 100,
+        "unit": "W"
+      },
+      "CNST_BATTERY_RUNTIME_10H": {
+        "type": "component",
+        "parameter": "battery_runtime",
+        "operator": "min",
+        "value": 10,
+        "unit": "hours"
+      }
+    },
+
+    "io_constraints": {
+      "CNST_DIGITAL_IO_MIN_16": {
+        "type": "component",
+        "parameter": "digital_io",
+        "operator": "min",
+        "value": 16,
+        "unit": "channels"
+      },
+      "CNST_DIGITAL_IO_MIN_32": {
+        "type": "component",
+        "parameter": "digital_io",
+        "operator": "min",
+        "value": 32,
+        "unit": "channels"
+      },
+      "CNST_DIGITAL_IO_MIN_64": {
+        "type": "component",
+        "parameter": "digital_io",
+        "operator": "min",
+        "value": 64,
+        "unit": "channels"
+      },
+      "CNST_ANALOG_IO_MIN_4": {
+        "type": "component",
+        "parameter": "analog_io",
+        "operator": "min",
+        "value": 4,
+        "unit": "channels"
+      },
+      "CNST_ANALOG_IO_MIN_8": {
+        "type": "component",
+        "parameter": "analog_io",
+        "operator": "min",
+        "value": 8,
+        "unit": "channels"
+      },
+      "CNST_ANALOG_IO_MIN_16": {
+        "type": "component",
+        "parameter": "analog_io",
+        "operator": "min",
+        "value": 16,
+        "unit": "channels"
+      },
+      "CNST_ANALOG_IO_MIN_24": {
+        "type": "component",
+        "parameter": "analog_io",
+        "operator": "min",
+        "value": 24,
+        "unit": "channels"
+      }
+    },
+
+    "network_constraints": {
+      "CNST_NETWORK_PORTS_MIN_1": {
+        "type": "component",
+        "parameter": "network_ports",
+        "operator": "min",
+        "value": 1,
+        "unit": "ports"
+      },
+      "CNST_NETWORK_PORTS_MIN_2": {
+        "type": "component",
+        "parameter": "network_ports",
+        "operator": "min",
+        "value": 2,
+        "unit": "ports"
+      },
+      "CNST_NETWORK_PORTS_MIN_3": {
+        "type": "component",
+        "parameter": "network_ports",
+        "operator": "min",
+        "value": 3,
+        "unit": "ports"
+      },
+      "CNST_GIGABIT_ETHERNET": {
+        "type": "component",
+        "parameter": "ethernet_speed",
+        "operator": "min",
+        "value": 1000,
+        "unit": "Mbps"
+      },
+      "CNST_SERIAL_PORTS_MIN_2": {
+        "type": "component",
+        "parameter": "serial_ports",
+        "operator": "min",
+        "value": 2,
+        "unit": "ports"
+      },
+      "CNST_SERIAL_PORTS_MIN_4": {
+        "type": "component",
+        "parameter": "serial_ports",
+        "operator": "min",
+        "value": 4,
+        "unit": "ports"
+      },
+      "CNST_USB_PORTS_MIN_4": {
+        "type": "component",
+        "parameter": "usb_ports",
+        "operator": "min",
+        "value": 4,
+        "unit": "ports"
+      },
+      "CNST_USB_PORTS_MIN_6": {
+        "type": "component",
+        "parameter": "usb_ports",
+        "operator": "min",
+        "value": 6,
+        "unit": "ports"
+      }
+    },
+
+    "environmental_constraints": {
+      "CNST_TEMP_STANDARD": {
+        "type": "component",
+        "parameter": "temperature_range",
+        "operator": "range",
+        "value": {"min": 0, "max": 50},
+        "unit": "°C"
+      },
+      "CNST_TEMP_EXTENDED": {
+        "type": "component",
+        "parameter": "temperature_range",
+        "operator": "range",
+        "value": {"min": -20, "max": 60},
+        "unit": "°C"
+      },
+      "CNST_TEMP_INDUSTRIAL": {
+        "type": "component",
+        "parameter": "temperature_range",
+        "operator": "range",
+        "value": {"min": -40, "max": 70},
+        "unit": "°C"
+      },
+      "CNST_IP20": {
+        "type": "component",
+        "parameter": "ingress_protection",
+        "operator": "min",
+        "value": "IP20",
+        "unit": "rating"
+      },
+      "CNST_IP40": {
+        "type": "component",
+        "parameter": "ingress_protection",
+        "operator": "min",
+        "value": "IP40",
+        "unit": "rating"
+      },
+      "CNST_IP54": {
+        "type": "component",
+        "parameter": "ingress_protection",
+        "operator": "min",
+        "value": "IP54",
+        "unit": "rating"
+      },
+      "CNST_IP65": {
+        "type": "component",
+        "parameter": "ingress_protection",
+        "operator": "min",
+        "value": "IP65",
+        "unit": "rating"
+      },
+      "CNST_IP67": {
+        "type": "component",
+        "parameter": "ingress_protection",
+        "operator": "min",
+        "value": "IP67",
+        "unit": "rating"
+      },
+      "CNST_IP69K": {
+        "type": "component",
+        "parameter": "ingress_protection",
+        "operator": "min",
+        "value": "IP69K",
+        "unit": "rating"
+      },
+      "CNST_VIBRATION_2G": {
+        "type": "component",
+        "parameter": "vibration_resistance",
+        "operator": "min",
+        "value": 2,
+        "unit": "G"
+      },
+      "CNST_VIBRATION_5G": {
+        "type": "component",
+        "parameter": "vibration_resistance",
+        "operator": "min",
+        "value": 5,
+        "unit": "G"
+      }
+    },
+
+    "wireless_constraints": {
+      "CNST_WIFI": {
+        "type": "component",
+        "parameter": "wireless_capability",
+        "operator": "required",
+        "value": "WiFi"
+      },
+      "CNST_LTE": {
+        "type": "component",
+        "parameter": "wireless_capability",
+        "operator": "required",
+        "value": "LTE"
+      },
+      "CNST_5G": {
+        "type": "component",
+        "parameter": "wireless_capability",
+        "operator": "required",
+        "value": "5G"
+      }
+    },
+
+    "performance_constraints": {
+      "CNST_LATENCY_MAX_1MS": {
+        "type": "feature",
+        "parameter": "response_latency",
+        "operator": "max",
+        "value": 1,
+        "unit": "ms"
+      },
+      "CNST_LATENCY_MAX_4MS": {
+        "type": "feature",
+        "parameter": "response_latency",
+        "operator": "max",
+        "value": 4,
+        "unit": "ms"
+      },
+      "CNST_LATENCY_MAX_10MS": {
+        "type": "feature",
+        "parameter": "response_latency",
+        "operator": "max",
+        "value": 10,
+        "unit": "ms"
+      },
+      "CNST_LATENCY_MAX_20MS": {
+        "type": "feature",
+        "parameter": "response_latency",
+        "operator": "max",
+        "value": 20,
+        "unit": "ms"
+      },
+      "CNST_LATENCY_MAX_50MS": {
+        "type": "feature",
+        "parameter": "response_latency",
+        "operator": "max",
+        "value": 50,
+        "unit": "ms"
+      },
+      "CNST_LATENCY_MAX_100MS": {
+        "type": "feature",
+        "parameter": "response_latency",
+        "operator": "max",
+        "value": 100,
+        "unit": "ms"
+      },
+      "CNST_THROUGHPUT_MIN_30FPS": {
+        "type": "feature",
+        "parameter": "processing_throughput",
+        "operator": "min",
+        "value": 30,
+        "unit": "fps"
+      },
+      "CNST_THROUGHPUT_MIN_60FPS": {
+        "type": "feature",
+        "parameter": "processing_throughput",
+        "operator": "min",
+        "value": 60,
+        "unit": "fps"
+      },
+      "CNST_THROUGHPUT_MIN_1000OPS": {
+        "type": "feature",
+        "parameter": "operations_per_second",
+        "operator": "min",
+        "value": 1000,
+        "unit": "ops/s"
+      }
+    },
+
+    "accuracy_constraints": {
+      "CNST_ACCURACY_MIN_95PCT": {
+        "type": "feature",
+        "parameter": "detection_accuracy",
+        "operator": "min",
+        "value": 95,
+        "unit": "%"
+      },
+      "CNST_ACCURACY_MIN_98PCT": {
+        "type": "feature",
+        "parameter": "detection_accuracy",
+        "operator": "min",
+        "value": 98,
+        "unit": "%"
+      },
+      "CNST_ACCURACY_MIN_99PCT": {
+        "type": "feature",
+        "parameter": "detection_accuracy",
+        "operator": "min",
+        "value": 99,
+        "unit": "%"
+      },
+      "CNST_MEASUREMENT_ERROR_1PCT": {
+        "type": "feature",
+        "parameter": "measurement_error",
+        "operator": "max",
+        "value": 1,
+        "unit": "%"
+      },
+      "CNST_MEASUREMENT_ERROR_01PCT": {
+        "type": "feature",
+        "parameter": "measurement_error",
+        "operator": "max",
+        "value": 0.1,
+        "unit": "%"
+      }
+    },
+
+    "sampling_constraints": {
+      "CNST_SAMPLING_RATE_10KHZ": {
+        "type": "feature",
+        "parameter": "sampling_rate",
+        "operator": "min",
+        "value": 10000,
+        "unit": "Hz"
+      },
+      "CNST_SAMPLING_RATE_100KHZ": {
+        "type": "feature",
+        "parameter": "sampling_rate",
+        "operator": "min",
+        "value": 100000,
+        "unit": "Hz"
+      },
+      "CNST_SAMPLING_RATE_1MHZ": {
+        "type": "feature",
+        "parameter": "sampling_rate",
+        "operator": "min",
+        "value": 1000000,
+        "unit": "Hz"
+      },
+      "CNST_SAMPLING_RATE_1_6MHZ": {
+        "type": "feature",
+        "parameter": "sampling_rate",
+        "operator": "min",
+        "value": 1600000,
+        "unit": "Hz"
+      },
+      "CNST_ADC_RESOLUTION_16BIT": {
+        "type": "feature",
+        "parameter": "adc_resolution",
+        "operator": "min",
+        "value": 16,
+        "unit": "bit"
+      },
+      "CNST_ADC_RESOLUTION_24BIT": {
+        "type": "feature",
+        "parameter": "adc_resolution",
+        "operator": "min",
+        "value": 24,
+        "unit": "bit"
+      }
+    },
+
+    "security_constraints": {
+      "CNST_VPN": {
+        "type": "feature",
+        "parameter": "security_features",
+        "operator": "required",
+        "value": "VPN"
+      },
+      "CNST_ENCRYPTION_AES256": {
+        "type": "feature",
+        "parameter": "encryption_level",
+        "operator": "min",
+        "value": "AES256"
+      }
+    },
+
+    "protocol_constraints": {
+      "CNST_MODBUS_TCP": {
+        "type": "feature",
+        "parameter": "protocol_support",
+        "operator": "required",
+        "value": "Modbus TCP"
+      },
+      "CNST_MODBUS_RTU": {
+        "type": "feature",
+        "parameter": "protocol_support",
+        "operator": "required",
+        "value": "Modbus RTU"
+      },
+      "CNST_MQTT": {
+        "type": "feature",
+        "parameter": "protocol_support",
+        "operator": "required",
+        "value": "MQTT"
+      },
+      "CNST_OPCUA": {
+        "type": "feature",
+        "parameter": "protocol_support",
+        "operator": "required",
+        "value": "OPC UA"
+      },
+      "CNST_BACNET": {
+        "type": "feature",
+        "parameter": "protocol_support",
+        "operator": "required",
+        "value": "BACnet"
+      },
+      "CNST_IEC61850": {
+        "type": "feature",
+        "parameter": "protocol_support",
+        "operator": "required",
+        "value": "IEC 61850"
+      },
+      "CNST_PROFINET": {
+        "type": "feature",
+        "parameter": "protocol_support",
+        "operator": "required",
+        "value": "PROFINET"
+      },
+      "CNST_ETHERCAT": {
+        "type": "feature",
+        "parameter": "protocol_support",
+        "operator": "required",
+        "value": "EtherCAT"
+      },
+      "CNST_ETHERNET_IP": {
+        "type": "feature",
+        "parameter": "protocol_support",
+        "operator": "required",
+        "value": "Ethernet/IP"
+      },
+      "CNST_DNP3": {
+        "type": "feature",
+        "parameter": "protocol_support",
+        "operator": "required",
+        "value": "DNP3"
+      },
+      "CNST_TSN_SUPPORT": {
+        "type": "feature",
+        "parameter": "network_features",
+        "operator": "required",
+        "value": "TSN"
+      },
+      "CNST_IEEE1588_PTP": {
+        "type": "feature",
+        "parameter": "time_sync",
+        "operator": "required",
+        "value": "IEEE 1588 PTP"
+      },
+      "CNST_CANBUS": {
+        "type": "feature",
+        "parameter": "fieldbus_support",
+        "operator": "required",
+        "value": "CANbus"
+      }
+    },
+
+    "special_constraints": {
+      "CNST_GPU_REQUIRED": {
+        "type": "component",
+        "parameter": "gpu_capability",
+        "operator": "required",
+        "value": true
+      },
+      "CNST_INTEL_XE_GPU": {
+        "type": "component",
+        "parameter": "gpu_type",
+        "operator": "exact",
+        "value": "Intel Xe"
+      },
+      "CNST_COMPACT_FORM": {
+        "type": "component",
+        "parameter": "form_factor",
+        "operator": "exact",
+        "value": "compact"
+      },
+      "CNST_DIN_RAIL_MOUNT": {
+        "type": "component",
+        "parameter": "mounting_type",
+        "operator": "exact",
+        "value": "DIN rail"
+      },
+      "CNST_RACK_MOUNT": {
+        "type": "component",
+        "parameter": "mounting_type",
+        "operator": "exact",
+        "value": "19-inch rack"
+      },
+      "CNST_FANLESS": {
+        "type": "component",
+        "parameter": "cooling_type",
+        "operator": "exact",
+        "value": "fanless"
+      },
+      "CNST_REDUNDANT_POWER": {
+        "type": "component",
+        "parameter": "power_redundancy",
+        "operator": "required",
+        "value": true
+      }
+    },
+
+    "certification_constraints": {
+      "CNST_CE_CERTIFIED": {
+        "type": "component",
+        "parameter": "certifications",
+        "operator": "required",
+        "value": "CE"
+      },
+      "CNST_UL_CERTIFIED": {
+        "type": "component",
+        "parameter": "certifications",
+        "operator": "required",
+        "value": "UL"
+      },
+      "CNST_ATEX_CERTIFIED": {
+        "type": "component",
+        "parameter": "certifications",
+        "operator": "required",
+        "value": "ATEX"
+      },
+      "CNST_CLASS1_DIV2": {
+        "type": "component",
+        "parameter": "certifications",
+        "operator": "required",
+        "value": "Class I Division 2"
+      },
+      "CNST_IEC61850_3": {
+        "type": "component",
+        "parameter": "certifications",
+        "operator": "required",
+        "value": "IEC 61850-3"
+      },
+      "CNST_EN50155": {
+        "type": "component",
+        "parameter": "certifications",
+        "operator": "required",
+        "value": "EN 50155"
+      }
+    }
+  },
+
+  "constraint_conflicts": {
+    "hard_conflicts": [
+      {
+        "constraint_a": "CNST_POWER_MAX_10W",
+        "constraint_b": "CNST_PROCESSOR_MIN_I7",
+        "severity": "absolute",
+        "reason": "All Core i7 processors exceed 10W power consumption",
+        "resolution": "User must choose between solar/battery operation or high performance"
+      },
+      {
+        "constraint_a": "CNST_POWER_MAX_10W",
+        "constraint_b": "CNST_PROCESSOR_MIN_I5",
+        "severity": "absolute",
+        "reason": "All Core i5 processors exceed 10W power consumption",
+        "resolution": "Consider Atom processors or external power"
+      },
+      {
+        "constraint_a": "CNST_POWER_MAX_10W",
+        "constraint_b": "CNST_GPU_REQUIRED",
+        "severity": "absolute",
+        "reason": "GPU-enabled systems exceed 10W power budget",
+        "resolution": "Choose between graphics acceleration or low power"
+      },
+      {
+        "constraint_a": "CNST_LATENCY_MAX_1MS",
+        "constraint_b": "CNST_WIFI",
+        "severity": "absolute",
+        "reason": "WiFi cannot guarantee sub-millisecond latency",
+        "resolution": "Use wired Ethernet for real-time requirements"
+      },
+      {
+        "constraint_a": "CNST_COMPACT_FORM",
+        "constraint_b": "CNST_ANALOG_IO_MIN_24",
+        "severity": "high",
+        "reason": "Compact controllers limited to 16 analog channels",
+        "resolution": "Use external I/O modules or larger form factor"
+      },
+      {
+        "constraint_a": "CNST_FANLESS",
+        "constraint_b": "CNST_PROCESSOR_MIN_I7",
+        "severity": "high",
+        "reason": "Core i7 thermal output requires active cooling",
+        "resolution": "Accept fan cooling or reduce to Core i5"
+      }
+    ],
+
+    "soft_conflicts": [
+      {
+        "constraint_a": "CNST_TEMP_EXTENDED",
+        "constraint_b": "CNST_STORAGE_TYPE_NVME_GEN4",
+        "severity": "medium",
+        "reason": "NVMe Gen4 drives may throttle at extreme temperatures",
+        "resolution": "Consider industrial-grade storage or temperature control"
+      },
+      {
+        "constraint_a": "CNST_COMPACT_FORM",
+        "constraint_b": "CNST_NETWORK_PORTS_MIN_3",
+        "severity": "low",
+        "reason": "Limited space for multiple Ethernet ports",
+        "resolution": "Consider managed switch or USB-to-Ethernet adapters"
+      },
+      {
+        "constraint_a": "CNST_BATTERY_RUNTIME_10H",
+        "constraint_b": "CNST_PROCESSOR_MIN_I5",
+        "severity": "medium",
+        "reason": "Higher power consumption reduces battery life",
+        "resolution": "Increase battery capacity or accept shorter runtime"
+      },
+      {
+        "constraint_a": "CNST_IP69K",
+        "constraint_b": "CNST_USB_PORTS_MIN_6",
+        "severity": "medium",
+        "reason": "Difficult to seal many connectors to IP69K",
+        "resolution": "Use sealed connectors or reduce port count"
+      },
+      {
+        "constraint_a": "CNST_VIBRATION_5G",
+        "constraint_b": "CNST_STORAGE_SATA",
+        "severity": "low",
+        "reason": "Mechanical drives vulnerable to vibration",
+        "resolution": "Use SSD storage for high-vibration environments"
+      },
+      {
+        "constraint_a": "CNST_SAMPLING_RATE_1_6MHZ",
+        "constraint_b": "CNST_WIFI",
+        "severity": "high",
+        "reason": "WiFi bandwidth insufficient for continuous high-speed data",
+        "resolution": "Buffer data locally or use Gigabit Ethernet"
+      },
+      {
+        "constraint_a": "CNST_ADC_RESOLUTION_24BIT",
+        "constraint_b": "CNST_SAMPLING_RATE_1MHZ",
+        "severity": "medium",
+        "reason": "24-bit ADCs typically limited to lower sampling rates",
+        "resolution": "Trade resolution for speed or use parallel ADCs"
+      },
+      {
+        "constraint_a": "CNST_POWER_MAX_20W",
+        "constraint_b": "CNST_5G",
+        "severity": "medium",
+        "reason": "5G modems consume significant power",
+        "resolution": "Use LTE or implement power cycling strategies"
+      },
+      {
+        "constraint_a": "CNST_ATEX_CERTIFIED",
+        "constraint_b": "CNST_WIFI",
+        "severity": "high",
+        "reason": "Wireless transmission restricted in explosive atmospheres",
+        "resolution": "Use intrinsically safe wireless or wired connection"
+      }
+    ]
+  },
+
+  "resolution_rules": {
+    "severity_levels": {
+      "absolute": {
+        "description": "Physically impossible to satisfy both constraints",
+        "action": "Require user choice via A/B question"
+      },
+      "high": {
+        "description": "Very difficult or expensive to satisfy both",
+        "action": "Strongly recommend choosing one, warn if both selected"
+      },
+      "medium": {
+        "description": "Possible but with trade-offs",
+        "action": "Inform user of trade-offs, suggest alternatives"
+      },
+      "low": {
+        "description": "Minor incompatibility or inefficiency",
+        "action": "Note in specifications, no action required"
+      }
+    },
+
+    "conflict_scoring": {
+      "absolute": 1000,
+      "high": 100,
+      "medium": 10,
+      "low": 1
+    },
+
+    "resolution_strategies": {
+      "power_vs_performance": {
+        "pattern": "CNST_POWER_MAX_* vs CNST_PROCESSOR_MIN_*",
+        "strategy": "Prioritize based on deployment environment"
+      },
+      "realtime_vs_wireless": {
+        "pattern": "CNST_LATENCY_MAX_* vs CNST_WIFI_*",
+        "strategy": "Recommend wired for <10ms requirements"
+      },
+      "size_vs_capability": {
+        "pattern": "CNST_COMPACT_FORM vs high I/O or port counts",
+        "strategy": "Suggest modular expansion options"
+      },
+      "environment_vs_performance": {
+        "pattern": "Extreme environmental vs high-performance components",
+        "strategy": "Recommend industrial-grade alternatives"
+      }
+    }
+  },
+
+  "constraint_groups": {
+    "solar_deployment": [
+      "CNST_POWER_MAX_10W",
+      "CNST_TEMP_EXTENDED",
+      "CNST_IP65",
+      "CNST_WIFI",
+      "CNST_MQTT"
+    ],
+    "real_time_control": [
+      "CNST_PROCESSOR_MIN_I5",
+      "CNST_LATENCY_MAX_1MS",
+      "CNST_TSN_SUPPORT",
+      "CNST_IEEE1588_PTP",
+      "CNST_GIGABIT_ETHERNET"
+    ],
+    "ai_processing": [
+      "CNST_PROCESSOR_MIN_I7",
+      "CNST_MEMORY_16GB",
+      "CNST_GPU_REQUIRED",
+      "CNST_STORAGE_TYPE_NVME",
+      "CNST_STORAGE_512GB"
+    ],
+    "hazardous_area": [
+      "CNST_ATEX_CERTIFIED",
+      "CNST_TEMP_EXTENDED",
+      "CNST_IP65",
+      "CNST_FANLESS"
+    ],
+    "high_speed_acquisition": [
+      "CNST_SAMPLING_RATE_100KHZ",
+      "CNST_ADC_RESOLUTION_16BIT",
+      "CNST_ANALOG_IO_MIN_8",
+      "CNST_STORAGE_SPEED_500MBS"
+    ]
+  }
+}
