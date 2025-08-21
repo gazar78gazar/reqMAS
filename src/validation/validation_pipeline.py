@@ -189,7 +189,9 @@ class ValidationPipeline:
         refined = specifications.copy()
         
         # Apply refinements based on CSP violations
-        csp_result = round_result.get("csp", {})
+        csp_result = round_result.get("csp")
+        if not csp_result:
+            return refined
         violations = csp_result.get("violations", [])
         
         for violation in violations:

@@ -72,6 +72,14 @@ class CommercialValidator(StatelessAgent):
     
     def _validate_budget(self, pricing: Dict, budget: Optional[float]) -> Dict:
         """Check if configuration fits within budget."""
+        if budget is not None and budget < 0:
+            return {
+                "budget_specified": True,
+                "within_budget": False,
+                "error": "Budget cannot be negative",
+                "message": "Invalid budget: Budget cannot be negative"
+            }
+        
         if not budget:
             return {
                 "budget_specified": False,

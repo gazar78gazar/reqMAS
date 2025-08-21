@@ -75,7 +75,7 @@ async def websocket_endpoint(websocket: WebSocket):
             result = await process_with_orchestrator({
                 "user_input": message.get("input", ""),
                 "source": "websocket",
-                "session_id": message.get("session_id", "default")
+                "session_id": message.get("session_id") or "default"
             })
             
             # Send response
@@ -98,7 +98,7 @@ async def process_requirement(data: dict):
     result = await process_with_orchestrator({
         "user_input": data.get("input", ""),
         "source": "api",
-        "session_id": data.get("session_id", "default")
+        "session_id": data.get("session_id") or "default"
     })
     
     return {
@@ -156,7 +156,7 @@ async def clear_session(session_id: str):
 
 async def process_with_orchestrator(input_data: dict):
     """Process input through orchestrator with session persistence and requirement accumulation."""
-    session_id = input_data.get("session_id", "default")
+    session_id = input_data.get("session_id") or "default"
     user_input = input_data.get("user_input", "")
     
     # RETRIEVE previous session state from blackboard
@@ -320,7 +320,7 @@ async def validate_requirements(data: dict):
     """
     Validate accumulated requirements.
     """
-    session_id = data.get("session_id", "default")
+    session_id = data.get("session_id") or "default"
     
     # Get accumulated specifications from blackboard
     session_key = f"session_{session_id}"
@@ -359,7 +359,7 @@ async def generate_ab_question(data: dict):
             "conflict": data.get("conflict", {})
         },
         {
-            "session_id": data.get("session_id", "default"),
+            "session_id": data.get("session_id") or "default",
             "user_profile": data.get("user_profile", {})
         }
     )
@@ -371,7 +371,7 @@ async def check_autofill(data: dict):
     """
     Check if autofill should trigger.
     """
-    session_id = data.get("session_id", "default")
+    session_id = data.get("session_id") or "default"
     
     # Get validation results
     validation = data.get("validation_results", {})
@@ -402,7 +402,7 @@ async def enhanced_process(data: dict):
     # If confidence is high enough, run validation
     if process_result.get("aggregate_confidence", 0) >= 0.7:
         validation_result = await validate_requirements({
-            "session_id": data.get("session_id", "default"),
+            "session_id": data.get("session_id") or "default",
             "budget": data.get("budget")
         })
         
@@ -411,7 +411,7 @@ async def enhanced_process(data: dict):
         # Check for autofill
         if validation_result.get("validation", {}).get("final_result", {}).get("valid"):
             autofill_result = await check_autofill({
-                "session_id": data.get("session_id"),
+                "session_id": data.get("session_id") or "default",
                 "validation_results": validation_result.get("validation"),
                 "user_profile": data.get("user_profile", {})
             })

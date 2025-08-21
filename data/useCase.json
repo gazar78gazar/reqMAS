@@ -1376,7 +1376,7 @@
       "common_sub_requirements": ["CSR_REAL_TIME", "CSR_DATA_AGGREGATION"],
       "specific_constraints": []
     }
-  },
+  
 
   "common_sub_requirements": {
     "CSR_PROCESSING_POWER_HIGH": {

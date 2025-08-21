@@ -34,6 +34,20 @@ class TechnicalValidator(StatelessAgent):
         # Extract I/O counts from specifications
         io_requirements = self._extract_io_requirements(specifications)
         
+        # Check if I/O requirements extraction failed (exceeded limit)
+        if isinstance(io_requirements, dict) and io_requirements.get("valid") is False:
+            return {
+                "valid": False,
+                "confidence": 0.0,
+                "error": io_requirements.get("error"),
+                "io_requirements": io_requirements,
+                "controller": {"valid": False, "message": io_requirements.get("error")},
+                "modules": {"valid": False, "message": io_requirements.get("error")},
+                "constraints": {"valid": False},
+                "conflicts": [{"type": "technical", "message": io_requirements.get("error"), "severity": "high"}],
+                "recommendations": []
+            }
+        
         # Select appropriate controller
         controller_validation = self._validate_controller_selection(io_requirements)
         
@@ -86,6 +100,19 @@ class TechnicalValidator(StatelessAgent):
         
         io_counts["total_io"] = sum(v for k, v in io_counts.items() 
                                    if k in ["analog_input", "analog_output", "digital_input", "digital_output"])
+        
+        # Check I/O count limit
+        if io_counts["total_io"] > 256:
+            return {
+                "valid": False,
+                "error": "I/O count exceeds maximum of 256",
+                "total_io": io_counts["total_io"],
+                "analog_input": io_counts["analog_input"],
+                "analog_output": io_counts["analog_output"],
+                "digital_input": io_counts["digital_input"],
+                "digital_output": io_counts["digital_output"]
+            }
+        
         return io_counts
     
     def _validate_controller_selection(self, io_requirements: Dict) -> Dict:

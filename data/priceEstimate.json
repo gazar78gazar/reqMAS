@@ -1,0 +1,257 @@
+{
+  "metadata": {
+    "version": "2.0",
+    "description": "Constraint-based pricing rules for reqMAS quick cost estimation",
+    "created": "2025-01-28",
+    "usage": "Map constraints to price categories, calculate total = base_infrastructure + selected_categories"
+  },
+  
+  "base_infrastructure": {
+    "description": "Mandatory cost added to EVERY solution",
+    "fixed_cost": 108,
+    "components_included": [
+      "Power infrastructure (DIN rail or standalone unit)",
+      "Cooling system (fans)",
+      "Power cord (regional)",
+      "Cables & connectors (SATA, display, etc.)",
+      "Thermal pads (CPU, memory, storage)",
+      "Miscellaneous accessories (screws, feet, ties)"
+    ],
+    "note": "This is a fixed cost for complete solution readiness"
+  },
+  
+  "price_categories": {
+    "processing": {
+      "PROCESSING_POWER_LOW": {
+        "avg_cost": 664,
+        "range": [629, 700],
+        "description": "Intel Atom x6413E/x6425E",
+        "uno_models": "UNO-137 series"
+      },
+      "PROCESSING_POWER_MEDIUM": {
+        "avg_cost": 876,
+        "range": [833, 962],
+        "description": "Intel Core i3-1215UE",
+        "uno_models": "UNO-148-B, UNO-238-B"
+      },
+      "PROCESSING_POWER_HIGH": {
+        "avg_cost": 1082,
+        "range": [1047, 1152],
+        "description": "Intel Core i7-1265UE",
+        "uno_models": "UNO-148-I, UNO-238-I"
+      }
+    },
+    
+    "memory": {
+      "MEMORY_SMALL": {
+        "avg_cost": 48,
+        "range": [47, 50],
+        "capacity": "8GB DDR4/DDR5",
+        "mram_option": 190,
+        "note": "MRAM available for non-volatile requirements at 4x cost"
+      },
+      "MEMORY_MEDIUM": {
+        "avg_cost": 79,
+        "range": [60, 91],
+        "capacity": "16GB DDR4/DDR5",
+        "mram_option": 380,
+        "note": "MRAM available for non-volatile requirements at 5x cost"
+      },
+      "MEMORY_LARGE": {
+        "avg_cost": 117,
+        "range": [65, 171],
+        "capacity": "32GB DDR4/DDR5",
+        "mram_option": 760,
+        "note": "MRAM available for non-volatile requirements at 6.5x cost"
+      }
+    },
+    
+    "storage": {
+      "STORAGE_SMALL": {
+        "avg_cost": 37,
+        "range": [31, 43],
+        "capacity": "128GB",
+        "type": "SATA/NVMe"
+      },
+      "STORAGE_MEDIUM": {
+        "avg_cost": 75,
+        "range": [41, 90],
+        "capacity": "256-512GB",
+        "type": "SATA/NVMe/Gen4"
+      },
+      "STORAGE_LARGE": {
+        "avg_cost": 107,
+        "range": [103, 110],
+        "capacity": "1-2TB",
+        "type": "NVMe Gen4"
+      }
+    },
+    
+    "wireless": {
+      "WIRELESS_WIFI": {
+        "total_cost": 67,
+        "description": "WiFi 6 + Bluetooth 5.3",
+        "includes": "Module + Antenna + Cable",
+        "range": "Local area, up to 100m"
+      },
+      "WIRELESS_CELLULAR": {
+        "total_cost": 133,
+        "description": "LTE/HSPA+/GPS",
+        "includes": "Module + Antenna + Cable",
+        "range": "Wide area, cellular coverage"
+      }
+    },
+    
+    "io_expansion": {
+      "DIGITAL_IO_BASIC": {
+        "avg_cost": 175,
+        "range": [140, 215],
+        "channels": "15-18",
+        "type": "Digital I/O"
+      },
+      "ANALOG_INPUT": {
+        "avg_cost": 283,
+        "range": [235, 315],
+        "channels": "7-8",
+        "type": "Analog input (RTD, thermocouple, voltage)"
+      },
+      "RELAY_OUTPUT": {
+        "avg_cost": 193,
+        "range": [175, 210],
+        "channels": "6",
+        "type": "Relay/power relay output"
+      },
+      "MIXED_IO": {
+        "avg_cost": 330,
+        "range": [315, 330],
+        "channels": "8-10",
+        "type": "Combined analog + digital I/O"
+      }
+    },
+    
+    "operating_system": {
+      "OS_LINUX": {
+        "avg_cost": 29,
+        "description": "Linux (AdvLinux IOTG)"
+      },
+      "OS_WINDOWS_STANDARD": {
+        "avg_cost": 51,
+        "description": "Windows 10 IoT Enterprise"
+      },
+      "OS_WINDOWS_PREMIUM": {
+        "avg_cost": 75,
+        "description": "Windows 11 LTSC"
+      }
+    }
+  },
+  
+  "constraint_mappings": {
+    "processing_constraints": {
+      "PROCESSING_POWER_LOW": ["processing.PROCESSING_POWER_LOW"],
+      "PROCESSING_POWER_MEDIUM": ["processing.PROCESSING_POWER_MEDIUM"],
+      "PROCESSING_POWER_HIGH": ["processing.PROCESSING_POWER_HIGH"],
+      "AI_INFERENCE": ["processing.PROCESSING_POWER_HIGH", "memory.MEMORY_MEDIUM"],
+      "REAL_TIME": ["processing.PROCESSING_POWER_MEDIUM"],
+      "VISION_PROCESSING": ["processing.PROCESSING_POWER_HIGH", "memory.MEMORY_LARGE"]
+    },
+    
+    "memory_constraints": {
+      "MEMORY_SMALL": ["memory.MEMORY_SMALL"],
+      "MEMORY_MEDIUM": ["memory.MEMORY_MEDIUM"],
+      "MEMORY_LARGE": ["memory.MEMORY_LARGE"],
+      "LARGE_MEMORY": ["memory.MEMORY_LARGE"],
+      "NON_VOLATILE_MEMORY": ["memory.MEMORY_SMALL with MRAM"]
+    },
+    
+    "storage_constraints": {
+      "STORAGE_SMALL": ["storage.STORAGE_SMALL"],
+      "STORAGE_MEDIUM": ["storage.STORAGE_MEDIUM"],
+      "STORAGE_LARGE": ["storage.STORAGE_LARGE"],
+      "FAST_STORAGE": ["storage.STORAGE_MEDIUM OR storage.STORAGE_LARGE"],
+      "VIDEO_STORAGE": ["storage.STORAGE_LARGE"]
+    },
+    
+    "communication_constraints": {
+      "WIRELESS_COMM": ["wireless.WIRELESS_WIFI OR wireless.WIRELESS_CELLULAR"],
+      "WIRELESS_EXTENSION": ["wireless.WIRELESS_WIFI"],
+      "REMOTE_CONNECTIVITY": ["wireless.WIRELESS_CELLULAR"],
+      "LOCAL_WIRELESS": ["wireless.WIRELESS_WIFI"]
+    },
+    
+    "io_constraints": {
+      "DIGITAL_IO": ["io_expansion.DIGITAL_IO_BASIC"],
+      "ANALOG_INPUT": ["io_expansion.ANALOG_INPUT"],
+      "RELAY_CONTROL": ["io_expansion.RELAY_OUTPUT"],
+      "HIGH_IO_DENSITY": ["io_expansion.DIGITAL_IO_BASIC AND io_expansion.ANALOG_INPUT"],
+      "MIXED_SIGNALS": ["io_expansion.MIXED_IO"]
+    },
+    
+    "os_constraints": {
+      "WINDOWS_OS": ["operating_system.OS_WINDOWS_STANDARD OR operating_system.OS_WINDOWS_PREMIUM"],
+      "LINUX_OS": ["operating_system.OS_LINUX"],
+      "ENTERPRISE_OS": ["operating_system.OS_WINDOWS_PREMIUM"]
+    }
+  },
+  
+  "calculation_rules": {
+    "formula": "Total_Cost = base_infrastructure + Σ(selected_categories)",
+    
+    "selection_logic": {
+      "OR_operator": "Select lowest cost option unless specific requirements dictate otherwise",
+      "AND_operator": "Add all required categories together",
+      "multiple_io": "May require 2-3 modules for HIGH_IO_DENSITY"
+    },
+    
+    "commercial_validation_rules": [
+      {
+        "rule": "When WIRELESS_COMM constraint present",
+        "decision": "Select WIFI if budget < $1500 and local range sufficient, else CELLULAR"
+      },
+      {
+        "rule": "When multiple OS options available",
+        "decision": "Select based on application requirements: Linux for embedded, Windows for enterprise"
+      },
+      {
+        "rule": "When MRAM considered",
+        "decision": "Only select if power-loss data retention critical AND budget allows 4-6x premium"
+      }
+    ]
+  },
+  
+  "quick_estimates": {
+    "minimal_system": {
+      "description": "Basic monitoring/control",
+      "components": ["PROCESSING_POWER_LOW", "MEMORY_SMALL", "STORAGE_SMALL"],
+      "estimated_cost": 857,
+      "with_infrastructure": 965
+    },
+    "standard_system": {
+      "description": "Industrial automation",
+      "components": ["PROCESSING_POWER_MEDIUM", "MEMORY_MEDIUM", "STORAGE_MEDIUM", "DIGITAL_IO"],
+      "estimated_cost": 1203,
+      "with_infrastructure": 1311
+    },
+    "advanced_system": {
+      "description": "AI edge computing",
+      "components": ["PROCESSING_POWER_HIGH", "MEMORY_LARGE", "STORAGE_LARGE", "WIRELESS_WIFI"],
+      "estimated_cost": 1373,
+      "with_infrastructure": 1481
+    }
+  },
+  
+  "usage_notes": {
+    "for_reqmas": [
+      "1. Parse user constraints from requirements",
+      "2. Map constraints to price categories using constraint_mappings",
+      "3. Resolve OR operators based on commercial_validation_rules",
+      "4. Sum selected categories + base_infrastructure",
+      "5. Apply ±15% margin for initial estimate"
+    ],
+    "important": [
+      "All prices in USD",
+      "Base infrastructure ($108) is mandatory for all solutions",
+      "Some UNO models include memory - adjust calculations accordingly",
+      "Bulk discounts not included in these estimates"
+    ]
+  }
+}
