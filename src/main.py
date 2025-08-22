@@ -326,6 +326,7 @@ async def process_with_orchestrator(input_data: dict):
             "validation_results": validation_result,
             "conflicts": conflicts,
             "specs_count": len(all_specs),
+            "all_specs": all_specs,
             "turn": current_turn
         }, context)
         

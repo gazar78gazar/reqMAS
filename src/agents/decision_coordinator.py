@@ -116,19 +116,20 @@ class DecisionCoordinatorAgent(StatelessAgent):
     async def _format_chat_response(self, input_data: Dict, context: Dict) -> Dict:
         """Format a chat response based on validation results."""
         validation_results = input_data.get("validation_results", {})
+        all_specs = input_data.get("all_specs", [])
         user_profile = context.get("user_profile", {})
         expertise_level = user_profile.get("expertise_level", "intermediate")
         
         # Format response based on expertise
         if expertise_level == "expert":
             # Technical details
-            response = self._format_expert_response(validation_results)
+            response = self._format_expert_response(validation_results, all_specs)
         elif expertise_level == "novice":
             # Simplified explanation
-            response = self._format_novice_response(validation_results)
+            response = self._format_novice_response(validation_results, all_specs)
         else:
             # Balanced response
-            response = self._format_intermediate_response(validation_results)
+            response = self._format_intermediate_response(validation_results, all_specs)
         
         return {
             "type": "chat_response",
@@ -165,7 +166,7 @@ class DecisionCoordinatorAgent(StatelessAgent):
                 "reason": "Gathering more requirements"
             }
     
-    def _format_expert_response(self, validation: Dict) -> str:
+    def _format_expert_response(self, validation: Dict, all_specs: List) -> str:
         """Format technical response for experts."""
         controllers = validation.get('controller', {}).get('suitable_controllers', [])
         modules = validation.get('modules', {}).get('modules_required', [])
@@ -180,33 +181,42 @@ class DecisionCoordinatorAgent(StatelessAgent):
 - Total Cost: ${price:.2f}
 - Confidence: {confidence:.2%}"""
     
-    def _format_novice_response(self, validation: Dict) -> str:
+    def _format_novice_response(self, validation: Dict, all_specs: List) -> str:
         """Format simple response for novices."""
         if validation.get('valid', False):
             return "✓ Your configuration looks good! Everything is compatible."
         else:
             return "There are some issues with your configuration. Let me help you fix them."
     
-    def _format_intermediate_response(self, validation: Dict) -> str:
-        """Format balanced response for intermediate users."""
-        print(f"   [DecisionCoord] _format_intermediate_response called with: {list(validation.keys()) if validation else 'None'}")
+    def _format_intermediate_response(self, validation: Dict, all_specs: List) -> str:
+        """Format response based on validation results AND specifications."""
+        print(f"[DecisionCoord] Received {len(all_specs)} specifications")
         
-        # Check if validation is empty or has no specs
-        if not validation or not validation.get('specifications'):
-            print(f"   [DecisionCoord] No specifications found, returning generic response")
+        if not all_specs:
             return "I'm ready to help with your IoT requirements. Please describe what you need."
         
+        # Generate contextual response based on specs
+        response = "Based on your requirements:\n"
+        for spec in all_specs:
+            constraint = spec.get('constraint', 'Unknown')
+            value = spec.get('value', 'Unknown')
+            response += f"- {constraint}: {value}\n"
+        
+        # Add validation status if available
         valid = validation.get('valid', False)
-        price = validation.get('pricing', {}).get('final_price', 0)
+        conflicts = validation.get('conflicts', [])
         
         if valid:
-            return f"Your configuration is valid. Estimated cost: ${price:.2f}"
+            response += "\n✅ Your configuration looks good!"
+            price = validation.get('pricing', {}).get('final_price', 0)
+            if price > 0:
+                response += f" Estimated cost: ${price:.2f}"
+        elif conflicts:
+            response += f"\n⚠️ Found {len(conflicts)} issues that need attention."
         else:
-            conflicts = validation.get('conflicts', [])
-            if conflicts:
-                return f"Found {len(conflicts)} issues to resolve. Let's work through them."
-            else:
-                return "Analyzing your requirements. Please provide more details about your needs."
+            response += "\n🔍 Let me analyze these requirements further..."
+        
+        return response
     
     def reset_attempts(self, session_id: str):
         """Reset attempt counter for session."""

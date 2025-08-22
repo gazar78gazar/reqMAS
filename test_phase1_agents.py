@@ -45,7 +45,7 @@ def test_phase1_activation():
             
             if response.status_code == 200:
                 data = response.json()
-                result = data.get('result', {})
+                result = data.get('result', data)  # Handle both nested and direct
                 
                 # Check which agents were activated
                 routing = result.get('routing', {})
@@ -144,7 +144,7 @@ def test_phase1_specifications():
             
             if response.status_code == 200:
                 data = response.json()
-                result = data.get('result', {})
+                result = data.get('result', data)  # Handle both nested and direct
                 
                 # Get accumulated specs
                 total_specs = result.get('session_context', {}).get('total_specs', 0)
@@ -196,7 +196,7 @@ def test_phase1_conversation_context():
             
             if response.status_code == 200:
                 data = response.json()
-                result = data.get('result', {})
+                result = data.get('result', data)  # Handle both nested and direct
                 
                 conv_response = result.get('conversational_response', 'MISSING')
                 turn = result.get('session_context', {}).get('turn', 0)
