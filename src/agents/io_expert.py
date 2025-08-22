@@ -12,12 +12,31 @@ import os
 # Optional LLM imports - gracefully handle if not available
 try:
     from langchain_anthropic import ChatAnthropic
+    from langchain_openai import ChatOpenAI
     from langchain_core.prompts import ChatPromptTemplate
     LANGCHAIN_AVAILABLE = True
-except ImportError:
-    LANGCHAIN_AVAILABLE = False
-    ChatAnthropic = None
-    ChatPromptTemplate = None
+    OPENAI_AVAILABLE = True
+except ImportError as e:
+    print(f"Import warning: {e}")
+    try:
+        from langchain_anthropic import ChatAnthropic
+        from langchain_core.prompts import ChatPromptTemplate
+        LANGCHAIN_AVAILABLE = True
+        OPENAI_AVAILABLE = False
+        ChatOpenAI = None
+    except ImportError:
+        try:
+            from langchain_openai import ChatOpenAI
+            from langchain_core.prompts import ChatPromptTemplate
+            LANGCHAIN_AVAILABLE = True
+            OPENAI_AVAILABLE = True
+            ChatAnthropic = None
+        except ImportError:
+            LANGCHAIN_AVAILABLE = False
+            OPENAI_AVAILABLE = False
+            ChatAnthropic = None
+            ChatOpenAI = None
+            ChatPromptTemplate = None
 
 class IOExpertAgent(StatelessAgent):
     """
@@ -26,73 +45,83 @@ class IOExpertAgent(StatelessAgent):
     """
     
     def __init__(self, blackboard, message_bus):
+        model_name = os.getenv("IO_EXPERT_MODEL", "gpt-4o")
+        
         super().__init__(
             agent_id="io_expert",
-            model="claude-3-opus-20240229",
+            model=model_name,
             blackboard=blackboard,
             message_bus=message_bus
         )
         
-        # Initialize Claude model if API key is available
+        # Initialize LLM
         self.llm = None
         self.prompt = None
         
         try:
-            if LANGCHAIN_AVAILABLE and os.getenv("ANTHROPIC_API_KEY"):
-                self.llm = ChatAnthropic(
-                    model="claude-3-sonnet-20240229",
+            # Use GPT-4o
+            if OPENAI_AVAILABLE and ChatOpenAI and os.getenv("OPENAI_API_KEY"):
+                self.llm = ChatOpenAI(
+                    model="gpt-4o",
                     temperature=0.3,
-                    max_tokens=500
+                    max_tokens=2000,
+                    response_format={"type": "json_object"}  # GPT-4o JSON mode
                 )
-                
-                # Define prompt template
-                self.prompt = ChatPromptTemplate.from_messages([
-                    ("system", """You are an I/O Configuration Expert for industrial IoT systems.
-                    Your PRIMARY responsibility is determining I/O requirements that drive controller selection.
-                    You have VETO POWER over constraints that conflict with I/O requirements.
-                    
-                    Focus on:
-                    - Digital/Analog I/O specifications
-                    - Channel counts and types
-                    - Expansion requirements
-                    - I/O-related communication protocols
-                    
-                    You must output a JSON with the following structure:
-                    {
-                        "specifications": [
-                            {
-                                "type": "SR/SSR/CSR",
-                                "constraint": "description",
-                                "value": "specific value",
-                                "strength": 1000/100/10/1,
-                                "reasoning": "why this is needed"
-                            }
-                        ],
-                        "veto_constraints": ["list of non-negotiable I/O requirements"],
-                        "dependencies": {
-                            "communication": ["required protocols based on I/O"],
-                            "performance": ["performance needs based on I/O count"]
-                        },
-                        "confidence": 0.0-1.0,
-                        "requires_clarification": ["list of ambiguous requirements"]
-                    }"""),
-                    ("human", "{input}")
-                ])
+                print(f"IO Expert initialized with GPT-4o")
         except Exception as e:
-            print(f"LLM initialization failed: {e}")
+            print(f"Failed to initialize GPT-4o: {e}")
+        
+        # Initialize prompt - KEEP THE ESCAPED BRACES!
+        if self.llm and ChatPromptTemplate:
+            self.prompt = ChatPromptTemplate.from_messages([
+                ("system", """You are an I/O Configuration Expert for industrial IoT systems.
+
+CRITICAL: You must output valid JSON and nothing else.
+
+You have VETO POWER over I/O constraints.
+
+Analyze the user input for:
+- Count of sensors (when user says "4 temperature sensors", value must be "4")
+- Digital I/O requirements
+- Analog I/O requirements (RTD, thermocouple, 4-20mA)
+- Communication protocols
+- Environmental constraints
+
+Return EXACTLY this JSON structure:
+{{"specifications":[{{"type":"SR","constraint":"description","value":"specific value","strength":1000,"reasoning":"why needed"}}],"veto_constraints":[],"dependencies":{{"communication":[],"performance":[]}},"confidence":0.8,"requires_clarification":[]}}"""),
+                ("human", "{input}")
+            ])
+        
+        # Add this right after the LLM initialization code:
+        print("DEBUG: I/O Expert Initialization Debug:")
+        print(f"   ANTHROPIC_API_KEY: {'PRESENT' if os.getenv('ANTHROPIC_API_KEY') else 'MISSING'}")
+        print(f"   OPENAI_API_KEY: {'PRESENT' if os.getenv('OPENAI_API_KEY') else 'MISSING'}")
+        print(f"   IO_EXPERT_MODEL: {os.getenv('IO_EXPERT_MODEL', 'NOT SET')}")
+        print(f"   LANGCHAIN_AVAILABLE: {LANGCHAIN_AVAILABLE}")
+        print(f"   OPENAI_AVAILABLE: {OPENAI_AVAILABLE}")
+        print(f"   LLM object created: {hasattr(self, 'llm') and self.llm is not None}")
+        print(f"   LLM type: {type(self.llm).__name__ if hasattr(self, 'llm') and self.llm else 'None'}")
+        print(f"   Prompt object created: {hasattr(self, 'prompt') and self.prompt is not None}")
+        print("=" * 50)
         
         self.coordination_lease = 3000  # 3 second coordination window
         
-    async def process(self, input_data: Dict, context: Dict) -> Dict:
+    async def process(self, input_data: Dict, context: Dict = None) -> Dict:
         """
         Process I/O requirements with LLM-first, pattern-matching fallback architecture.
         """
+        # Add this at the very start of the process method:
+        print("DEBUG: I/O Expert Processing Debug:")
+        print(f"   Input: {input_data.get('user_input', 'No input')}")
+        print(f"   LLM available: {hasattr(self, 'llm') and self.llm is not None}")
+        print(f"   Will try LLM: {hasattr(self, 'llm') and self.llm and self.prompt and os.getenv('ANTHROPIC_API_KEY')}")
+        
         user_input = input_data.get("user_input", "")
         
         # PRIMARY: Try LLM extraction first if available
         if self.llm:
             try:
-                llm_result = await self._extract_with_llm(user_input)
+                llm_result = await self._extract_requirements_llm(user_input)
                 if llm_result.get("confidence", 0) > 0.7:
                     print(f"Using LLM extraction (confidence: {llm_result['confidence']:.2f})")
                     return llm_result
@@ -182,56 +211,229 @@ class IOExpertAgent(StatelessAgent):
         
         return min(confidence, 1.0)
     
-    async def _extract_with_llm(self, user_input: str) -> Dict:
-        """Extract I/O requirements using LLM as primary method."""
+    async def _extract_requirements_llm(self, user_input: str) -> Dict:
+        """Extract I/O requirements using LLM with robust JSON parsing."""
+        import time
+        
+        start_time = time.time()
+        response = None
+        
         try:
-            if not (hasattr(self, 'llm') and self.llm and self.prompt and os.getenv("ANTHROPIC_API_KEY")):
+            if not (hasattr(self, 'llm') and self.llm and self.prompt):
                 raise Exception("LLM not available")
             
-            # Use the existing LLM setup
-            response = await self.llm.ainvoke(
-                self.prompt.format_messages(input=user_input)
-            )
+            # Add timing and token usage tracking
+            print(f"Invoking GPT-4o for input length: {len(user_input)} chars")
             
-            # Parse LLM response
+            # Format the prompt messages
             try:
-                result = json.loads(response.content)
+                messages = self.prompt.format_messages(input=user_input)
+                print(f"DEBUG: Formatted prompt with {len(messages)} messages")
+            except Exception as format_error:
+                print(f"ERROR: Prompt formatting failed: {format_error}")
+                raise format_error
+            
+            # Invoke Claude Sonnet 4
+            response = await self.llm.ainvoke(messages)
+            
+            # Calculate performance metrics
+            elapsed_time = time.time() - start_time
+            
+            # Log performance metrics (will be updated after parsing)
+            print(f"GPT-4o Performance:")
+            print(f"  - Response Time: {elapsed_time:.2f}s")
+            print(f"  - Model: gpt-4o")
+            print(f"  - Input Length: {len(user_input)} characters")
+            if hasattr(response, 'content') and response.content:
+                print(f"  - Output Length: {len(response.content)} characters")
+                print(f"  - Chars per second: {len(response.content)/elapsed_time:.1f}")
+            print(f"  - Response Type: {type(response).__name__}")
+            
+            # Handle different response formats from LangChain
+            response_text = ""
+            
+            # GPT-4o returns an AIMessage, same as Claude
+            if hasattr(response, 'content'):
+                response_text = response.content
+            # Dictionary response
+            elif isinstance(response, dict):
+                if 'content' in response:
+                    response_text = response['content']
+                elif 'text' in response:
+                    response_text = response['text']
+                elif 'message' in response:
+                    response_text = response['message']
+                elif 'choices' in response:  # GPT-4o might return choices
+                    response_text = response['choices'][0]['message']['content']
+                else:
+                    response_text = str(response)
+            # String response
+            elif isinstance(response, str):
+                response_text = response
+            else:
+                response_text = str(response)
+            
+            print(f"GPT-4o responded in {elapsed_time:.2f}s")
+            print(f"Response type: {type(response).__name__}")
+            print(f"Response preview: {response_text[:100]}...")
+            
+            # Clean the response text
+            response_text = response_text.strip()
+            
+            # Parse JSON with multiple fallback strategies
+            result = None
+            parsing_strategy = "unknown"
+            
+            # Strategy 1: Direct JSON parsing
+            try:
+                result = json.loads(response_text)
+                parsing_strategy = "direct_json"
+            except json.JSONDecodeError:
+                pass
+            
+            # Strategy 2: Extract from markdown code blocks
+            if not result and '```' in response_text:
+                import re
+                # Try json-specific code block first
+                json_match = re.search(r'```json\s*(.*?)\s*```', response_text, re.DOTALL)
+                if json_match:
+                    try:
+                        result = json.loads(json_match.group(1).strip())
+                        parsing_strategy = "json_code_block"
+                    except:
+                        pass
                 
-                # Validate LLM response structure
-                if not isinstance(result, dict) or "specifications" not in result:
-                    raise json.JSONDecodeError("Invalid response structure", "", 0)
+                # Try generic code block
+                if not result:
+                    code_match = re.search(r'```\s*(.*?)\s*```', response_text, re.DOTALL)
+                    if code_match:
+                        try:
+                            result = json.loads(code_match.group(1).strip())
+                            parsing_strategy = "generic_code_block"
+                        except:
+                            pass
+            
+            # Strategy 3: Find JSON object in mixed text
+            if not result:
+                import re
+                # Look for JSON object pattern
+                json_pattern = r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}'
+                matches = re.findall(json_pattern, response_text, re.DOTALL)
                 
-                # Ensure specifications have the right format
-                specifications = result.get("specifications", [])
-                for spec in specifications:
-                    # Ensure required fields exist
-                    if not all(key in spec for key in ["type", "constraint", "value", "strength"]):
-                        raise ValueError("Missing required specification fields")
+                # Try each match, starting with the largest
+                for match in sorted(matches, key=len, reverse=True):
+                    try:
+                        potential_json = match.strip()
+                        result = json.loads(potential_json)
+                        parsing_strategy = "pattern_matching"
+                        break
+                    except:
+                        continue
+            
+            # Strategy 4: Extract between first { and last }
+            if not result:
+                start_idx = response_text.find('{')
+                end_idx = response_text.rfind('}')
+                if start_idx != -1 and end_idx != -1 and end_idx > start_idx:
+                    try:
+                        potential_json = response_text[start_idx:end_idx+1]
+                        result = json.loads(potential_json)
+                        parsing_strategy = "bracket_extraction"
+                    except:
+                        pass
+            
+            # If still no valid JSON, raise error
+            if not result:
+                raise json.JSONDecodeError("Could not extract valid JSON from response", response_text, 0)
+            
+            # Validate result structure
+            if not isinstance(result, dict):
+                raise ValueError(f"Expected dict, got {type(result)}")
+            
+            print(f"DEBUG: Parsed result keys: {list(result.keys())}")
+            
+            # Ensure all required fields exist with proper defaults
+            if "specifications" not in result:
+                print("DEBUG: Adding missing 'specifications' field")
+                result["specifications"] = []
+            
+            # Validate each specification
+            for spec in result.get("specifications", []):
+                if not isinstance(spec, dict):
+                    continue
+                # Ensure all required fields
+                spec.setdefault("type", "SR")
+                spec.setdefault("constraint", "")
+                spec.setdefault("value", "")
+                spec.setdefault("strength", 10)
+                spec.setdefault("reasoning", "")
+            
+            # Set other required fields with defaults
+            result.setdefault("veto_constraints", [])
+            result.setdefault("dependencies", {"communication": [], "performance": []})
+            result.setdefault("confidence", 0.5)
+            result.setdefault("requires_clarification", [])
+            
+            # Add metadata including performance metrics
+            result["extraction_method"] = "llm"
+            result["status"] = "success"
+            result["model_used"] = "gpt-4o"
+            result["performance_metrics"] = {
+                "response_time": elapsed_time,
+                "input_length": len(user_input),
+                "output_length": len(response.content) if hasattr(response, 'content') and response.content else 0,
+                "chars_per_second": len(response.content)/elapsed_time if hasattr(response, 'content') and response.content and elapsed_time > 0 else 0,
+                "parsing_strategy_used": parsing_strategy,
+                "model_performance": "success"
+            }
+            
+            # After successful parsing, log the structure for monitoring
+            if result and result.get("status") == "success":
+                print(f"JSON Structure Validation:")
+                print(f"  - Parsing Strategy: {parsing_strategy}")
+                print(f"  - Specifications: {len(result.get('specifications', []))}")
+                print(f"  - Veto Constraints: {len(result.get('veto_constraints', []))}")
+                print(f"  - Dependencies: {list(result.get('dependencies', {}).keys())}")
+                print(f"  - Confidence: {result.get('confidence', 0):.2f}")
+                print(f"  - Clarifications needed: {len(result.get('requires_clarification', []))}")
                 
-                # Add I/O-specific validations
-                result = self._validate_io_requirements(result)
-                
-                # Mark veto constraints  
-                result["veto_constraints"] = self._identify_veto_constraints(result)
-                
-                # Calculate I/O-specific confidence
-                result["confidence"] = self._calculate_io_confidence(result)
-                
-                # Add metadata to indicate LLM extraction
-                result["extraction_method"] = "llm"
-                result["status"] = "success"
-                
-                print(f"LLM extraction successful: {len(specifications)} specifications")
-                return result
-                
-            except (json.JSONDecodeError, ValueError, KeyError) as e:
-                print(f"LLM response parsing failed: {e}")
-                raise Exception("LLM response parsing failed")
-                
+                # Log specification details for monitoring
+                for i, spec in enumerate(result.get('specifications', [])[:3]):  # Log first 3 specs
+                    print(f"  - Spec {i+1}: {spec.get('constraint', 'N/A')} = {spec.get('value', 'N/A')} (strength: {spec.get('strength', 0)})")
+                if len(result.get('specifications', [])) > 3:
+                    print(f"  - ... and {len(result.get('specifications', [])) - 3} more specifications")
+            
+            print(f"Successfully parsed JSON from GPT-4o: {len(result.get('specifications', []))} specifications")
+            return result
+            
         except Exception as e:
-            print(f"LLM extraction failed: {e}")
-            # Re-raise to trigger fallback
-            raise
+            # Calculate elapsed time even on error
+            elapsed_time = time.time() - start_time
+            
+            print(f"LLM extraction error: {str(e)}")
+            print(f"GPT-4o Error Details:")
+            print(f"  - Error type: {type(e).__name__}")
+            print(f"  - Response preview: {response.content[:200] if response and hasattr(response, 'content') else 'No response'}")
+            print(f"GPT-4o Error Metrics:")
+            print(f"  - Failed after: {elapsed_time:.2f}s")
+            print(f"  - Response type: {type(response).__name__ if response else 'N/A'}")
+            
+            # Return structured error response for graceful degradation
+            return {
+                "specifications": [],
+                "veto_constraints": [],
+                "dependencies": {"communication": [], "performance": []},
+                "confidence": 0.0,
+                "requires_clarification": [f"Failed to parse LLM response: {str(e)}"],
+                "extraction_method": "failed",
+                "status": "error",
+                "error_details": str(e),
+                "performance_metrics": {
+                    "response_time": elapsed_time,
+                    "model": "gpt-4o",
+                    "error_type": type(e).__name__
+                }
+            }
     
     def _extract_requirements_fallback(self, user_input: str) -> Dict:
         """Extract I/O requirements using enhanced keyword detection."""

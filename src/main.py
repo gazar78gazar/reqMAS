@@ -3,6 +3,17 @@ Main Entry Point for reqMAS Phase 1
 Initializes core components and provides API endpoints
 """
 
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Force load from project root
+env_path = Path(__file__).parent.parent / '.env'
+load_dotenv(dotenv_path=env_path)
+
+# Verify it loaded
+print(f"OpenAI Key Loaded: {bool(os.getenv('OPENAI_API_KEY'))}")
+
 import asyncio
 from fastapi import FastAPI, WebSocket, HTTPException
 from core.blackboard import ReflectiveBlackboard
@@ -14,13 +25,8 @@ from validation.validation_pipeline import ValidationPipeline
 from agents.decision_coordinator import DecisionCoordinatorAgent
 from validation.confidence_aggregator import ConfidenceAggregator
 import json
-from dotenv import load_dotenv
-import os
 import uvicorn
 from datetime import datetime
-
-# Load environment variables
-load_dotenv()
 
 # Initialize FastAPI
 app = FastAPI(title="reqMAS Phase 1")
@@ -39,6 +45,22 @@ io_expert = IOExpertAgent(blackboard, message_bus)
 validation_pipeline = ValidationPipeline(blackboard=blackboard, message_bus=message_bus)
 decision_coordinator = DecisionCoordinatorAgent(blackboard=blackboard, message_bus=message_bus)
 confidence_aggregator = ConfidenceAggregator()
+
+print("\n=== PHASE 2 COMPONENT STATUS ===")
+print(f"1. ValidationPipeline: {'✓ Initialized' if validation_pipeline else '✗ Not initialized'}")
+print(f"2. DecisionCoordinator: {'✓ Initialized' if decision_coordinator else '✗ Not initialized'}")
+print(f"3. ConfidenceAggregator: {'✓ Initialized' if confidence_aggregator else '✗ Not initialized'}")
+
+# Check if they have required methods
+if validation_pipeline:
+    print(f"   - Has validate(): {hasattr(validation_pipeline, 'validate')}")
+    print(f"   - Has detect_conflicts(): {hasattr(validation_pipeline, 'detect_conflicts')}")
+    
+if decision_coordinator:
+    print(f"   - Has process(): {hasattr(decision_coordinator, 'process')}")
+    print(f"   - Has ABQ generator: {hasattr(decision_coordinator, 'abq_generator')}")
+    
+print("=== END COMPONENT STATUS ===\n")
 
 # Agent registry
 agent_registry = {
@@ -101,6 +123,15 @@ async def process_requirement(data: dict):
         "session_id": data.get("session_id") or "default"
     })
     
+    print("\n" + "="*30)
+    print("API ENDPOINT DIAGNOSTIC")
+    print("="*30)
+    print(f"Returning to Postman:")
+    print(f"  - Status: {result.get('status', 'MISSING')}")
+    print(f"  - Has conversational_response: {'conversational_response' in result}")
+    print(f"  - Response preview: {result.get('conversational_response', 'MISSING')[:100] if 'conversational_response' in result else 'MISSING'}")
+    print("="*30 + "\n")
+    
     return {
         "status": "success",
         "result": result,
@@ -156,8 +187,21 @@ async def clear_session(session_id: str):
 
 async def process_with_orchestrator(input_data: dict):
     """Process input through orchestrator with session persistence and requirement accumulation."""
+    import time
+    import json
+    
+    print("\n" + "="*50)
+    print("DIAGNOSTIC TRACE START")
+    print("="*50)
+    
+    checkpoint_times = {}
+    checkpoint_times['start'] = time.time()
+    
     session_id = input_data.get("session_id") or "default"
     user_input = input_data.get("user_input", "")
+    
+    print(f"1. Input received: {user_input[:50]}...")
+    print(f"   Session ID: {session_id}")
     
     # RETRIEVE previous session state from blackboard
     session_key = f"session_{session_id}"
@@ -191,6 +235,10 @@ async def process_with_orchestrator(input_data: dict):
     # Extract agents to activate
     agents_to_activate = routing_result.get("activated_agents", [])
     
+    checkpoint_times['before_agents'] = time.time()
+    print(f"2. Starting agent execution at {checkpoint_times['before_agents'] - checkpoint_times['start']:.2f}s")
+    print(f"   Agents to activate: {agents_to_activate}")
+    
     # Process with selected agents
     agent_results = {}
     for agent_id in agents_to_activate:
@@ -206,6 +254,10 @@ async def process_with_orchestrator(input_data: dict):
                     "error": str(e),
                     "confidence": 0.0
                 }
+    
+    checkpoint_times['after_agents'] = time.time()
+    print(f"3. Agents completed in {checkpoint_times['after_agents'] - checkpoint_times['before_agents']:.2f}s")
+    print(f"   Agent results keys: {list(agent_results.keys())}")
     
     # Merge results
     merged = blackboard.merge_parallel_outputs(agent_results) if agent_results else {}
@@ -237,10 +289,46 @@ async def process_with_orchestrator(input_data: dict):
     
     await blackboard.write("orchestrator", "consolidated", session_key, updated_state)
     
-    # Generate conversational response with accumulated context
-    conversational_response = generate_conversational_response(
-        user_input, all_specs, current_turn, previous_state
-    )
+    checkpoint_times['before_response'] = time.time()
+    print(f"4. Generating conversational response...")
+    
+    # Use Phase 2 intelligent response generation
+    if len(all_specs) > 0:
+        # Run validation
+        validation_result = await validation_pipeline.validate(all_specs, context)
+        
+        # Detect conflicts
+        conflicts = []
+        if hasattr(validation_pipeline, 'detect_conflicts'):
+            conflicts = validation_pipeline.detect_conflicts(validation_result)
+        
+        # Generate intelligent response
+        decision_result = await decision_coordinator.process({
+            "action_type": "format_response",
+            "validation_results": validation_result,
+            "conflicts": conflicts,
+            "specs_count": len(all_specs),
+            "turn": current_turn
+        }, context)
+        
+        conversational_response = decision_result.get("message", "")
+        
+        # If conflicts exist, add A/B question
+        if conflicts:
+            abq_result = await decision_coordinator.process({
+                "action_type": "generate_abq",
+                "conflict": conflicts[0]
+            }, context)
+            conversational_response += f"\n\n{abq_result.get('question', '')}"
+    else:
+        # Fallback to basic response
+        conversational_response = generate_conversational_response(
+            user_input, all_specs, current_turn, previous_state
+        )
+    
+    checkpoint_times['after_response'] = time.time()
+    print(f"   Response generated: '{conversational_response[:100]}...'")
+    print(f"   Generation took: {checkpoint_times['after_response'] - checkpoint_times['before_response']:.2f}s")
     
     aggregate_confidence = calculate_aggregate_confidence(all_specs)
     
@@ -258,11 +346,32 @@ async def process_with_orchestrator(input_data: dict):
         "conversation_summary": generate_conversation_summary(previous_state["messages"], all_specs)
     }
     
+    print(f"5. Final response structure:")
+    print(f"   - Keys in response: {list(response.keys())}")
+    print(f"   - conversational_response present: {'conversational_response' in response}")
+    print(f"   - conversational_response value: '{response.get('conversational_response', 'MISSING')}'")
+    
+    checkpoint_times['end'] = time.time()
+    total_time = checkpoint_times['end'] - checkpoint_times['start']
+    print(f"6. Total processing time: {total_time:.2f}s")
+    
+    if total_time > 3.0:
+        print("WARNING: Processing exceeded 3 second timeout!")
+        print(f"   Exceeded by: {total_time - 3.0:.2f}s")
+    
+    print("="*50)
+    print("DIAGNOSTIC TRACE END")
+    print("="*50 + "\n")
+    
     return response
 
 
 def generate_conversational_response(user_input: str, all_specs: list, turn: int, previous_state: dict) -> str:
     """Generate context-aware response"""
+    
+    print(f"   [ConvResp] Generating response for turn {turn}")
+    print(f"   [ConvResp] Specs count: {len(all_specs)}")
+    print(f"   [ConvResp] User input preview: {user_input[:50]}...")
     
     # Check if asking about accumulated requirements
     if any(word in user_input.lower() for word in ["total", "what are my", "summary", "all"]):
@@ -270,19 +379,29 @@ def generate_conversational_response(user_input: str, all_specs: list, turn: int
             spec_summary = []
             for spec in all_specs:
                 spec_summary.append(f"- {spec.get('constraint')}: {spec.get('value')}")
-            return f"Your total requirements (Turn {turn}):\n" + "\n".join(spec_summary)
+            response = f"Your total requirements (Turn {turn}):\n" + "\n".join(spec_summary)
+            print(f"   [ConvResp] Returning: '{response[:100]}...'")
+            return response
         else:
-            return "No requirements captured yet. Please describe what you need."
+            response = "No requirements captured yet. Please describe what you need."
+            print(f"   [ConvResp] Returning: '{response[:100]}...'")
+            return response
     
     # Check if adding to previous
     if "also" in user_input.lower() or "addition" in user_input.lower():
-        return f"I've added that to your requirements. You now have {len(all_specs)} specifications."
+        response = f"I've added that to your requirements. You now have {len(all_specs)} specifications."
+        print(f"   [ConvResp] Returning: '{response[:100]}...'")
+        return response
     
     # Default response showing accumulation
     if all_specs:
-        return f"Captured {len(all_specs)} requirements so far. What else do you need?"
+        response = f"Captured {len(all_specs)} requirements so far. What else do you need?"
+        print(f"   [ConvResp] Returning: '{response[:100]}...'")
+        return response
     else:
-        return "I'm ready to help with your IoT requirements. What do you need?"
+        response = "I'm ready to help with your IoT requirements. What do you need?"
+        print(f"   [ConvResp] Returning: '{response[:100]}...'")
+        return response
 
 
 def calculate_aggregate_confidence(specs: list) -> float:

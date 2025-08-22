@@ -163,13 +163,24 @@ class OrchestratorAgent(StatelessAgent):
         return results
     
     async def _execute_with_timeout(self, agent, input_data: Dict, agent_id: str):
-        """Execute agent with timeout."""
+        """Execute agent with timeout and diagnostic logging."""
+        import time
+        start_time = time.time()
+        
+        TIMEOUT_VALUE = 30.0  # INCREASED from 3.0 for diagnostics
+        print(f"   Executing {agent_id} with {TIMEOUT_VALUE}s timeout...")
+        
         try:
-            return await asyncio.wait_for(
+            result = await asyncio.wait_for(
                 agent.execute(input_data),
-                timeout=3.0  # 3 second timeout
+                timeout=TIMEOUT_VALUE
             )
+            elapsed = time.time() - start_time
+            print(f"   SUCCESS: {agent_id} completed in {elapsed:.2f}s")
+            return result
         except asyncio.TimeoutError:
+            elapsed = time.time() - start_time
+            print(f"   ERROR: {agent_id} TIMEOUT after {elapsed:.2f}s")
             return {
                 "status": "timeout",
                 "agent": agent_id,
