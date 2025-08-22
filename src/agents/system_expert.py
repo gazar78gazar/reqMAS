@@ -54,28 +54,59 @@ class SystemExpertAgent(StatelessAgent):
         """
         Process system requirements with secondary authority.
         """
-        # Check for I/O dependencies
-        io_dependencies = await self._check_io_dependencies(context)
+        print(f"[SYSTEM_EXPERT] Starting process")
+        print(f"[SYSTEM_EXPERT] Input keys: {list(input_data.keys())}")
         
-        # Extract system requirements using LLM
-        # Format messages and invoke synchronously
-        messages = self.prompt.format_messages(input=input_data.get("user_input", ""))
-        response = self.llm.invoke(messages)
-        
-        # Parse LLM response
         try:
-            result = json.loads(response.content)
-        except json.JSONDecodeError:
-            # Fallback parsing
-            result = self._parse_text_response(response.content)
-        
-        # Add system-specific validations
-        result = self._validate_system_requirements(result)
-        
-        # Calculate system-specific confidence
-        result["confidence"] = self._calculate_system_confidence(result)
-        
-        return result
+            # Check for I/O dependencies
+            io_dependencies = await self._check_io_dependencies(context)
+            print(f"[SYSTEM_EXPERT] Got dependencies: {io_dependencies}")
+            
+            # Format messages
+            user_input = input_data.get("user_input", "")
+            print(f"[SYSTEM_EXPERT] User input: {user_input[:100]}")
+            
+            messages = self.prompt.format_messages(input=user_input)
+            print(f"[SYSTEM_EXPERT] Formatted {len(messages)} messages")
+            
+            # Call LLM
+            print(f"[SYSTEM_EXPERT] About to call LLM with model: {self.model}")
+            response = self.llm.invoke(messages)  # Using invoke, not ainvoke!
+            print(f"[SYSTEM_EXPERT] Got LLM response, type: {type(response)}")
+            print(f"[SYSTEM_EXPERT] Response content preview: {str(response.content)[:200]}")
+            
+            # Parse LLM response
+            try:
+                result = json.loads(response.content)
+                print(f"[SYSTEM_EXPERT] Successfully parsed JSON, keys: {list(result.keys())}")
+            except json.JSONDecodeError as e:
+                print(f"[SYSTEM_EXPERT] JSON decode failed: {e}")
+                print(f"[SYSTEM_EXPERT] Raw content: {response.content}")
+                # Fallback parsing
+                result = self._parse_text_response(response.content)
+                print(f"[SYSTEM_EXPERT] Fallback parsing result: {result}")
+            
+            # Add system-specific validations
+            result = self._validate_system_requirements(result)
+            print(f"[SYSTEM_EXPERT] After validation, result type: {type(result)}")
+            
+            # Calculate system-specific confidence
+            result["confidence"] = self._calculate_system_confidence(result)
+            
+            print(f"[SYSTEM_EXPERT] Process complete, returning {len(result.get('specifications', []))} specs")
+            return result
+            
+        except Exception as e:
+            print(f"[SYSTEM_EXPERT] EXCEPTION: {type(e).__name__}: {e}")
+            import traceback
+            traceback.print_exc()
+            # Return safe fallback
+            return {
+                "specifications": [],
+                "confidence": 0.0,
+                "error": str(e),
+                "agent": "system_expert"
+            }
     
     def get_tools(self) -> List[str]:
         """Tools available to system expert."""

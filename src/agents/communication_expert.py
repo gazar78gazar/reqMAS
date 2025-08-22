@@ -54,28 +54,59 @@ class CommunicationExpertAgent(StatelessAgent):
         """
         Process communication requirements with secondary authority.
         """
-        # Check for I/O dependencies
-        dependencies = await self._check_dependencies(context)
+        print(f"[COMM_EXPERT] Starting process")
+        print(f"[COMM_EXPERT] Input keys: {list(input_data.keys())}")
         
-        # Extract communication requirements using LLM
-        # Format messages and invoke synchronously
-        messages = self.prompt.format_messages(input=input_data.get("user_input", ""))
-        response = self.llm.invoke(messages)
-        
-        # Parse LLM response
         try:
-            result = json.loads(response.content)
-        except json.JSONDecodeError:
-            # Fallback parsing
-            result = self._parse_text_response(response.content)
-        
-        # Add communication-specific validations
-        result = self._validate_communication_requirements(result)
-        
-        # Calculate communication-specific confidence
-        result["confidence"] = self._calculate_communication_confidence(result)
-        
-        return result
+            # Check for I/O dependencies
+            dependencies = await self._check_dependencies(context)
+            print(f"[COMM_EXPERT] Got dependencies: {dependencies}")
+            
+            # Format messages
+            user_input = input_data.get("user_input", "")
+            print(f"[COMM_EXPERT] User input: {user_input[:100]}")
+            
+            messages = self.prompt.format_messages(input=user_input)
+            print(f"[COMM_EXPERT] Formatted {len(messages)} messages")
+            
+            # Call LLM
+            print(f"[COMM_EXPERT] About to call LLM with model: {self.model}")
+            response = self.llm.invoke(messages)  # Using invoke, not ainvoke!
+            print(f"[COMM_EXPERT] Got LLM response, type: {type(response)}")
+            print(f"[COMM_EXPERT] Response content preview: {str(response.content)[:200]}")
+            
+            # Parse LLM response
+            try:
+                result = json.loads(response.content)
+                print(f"[COMM_EXPERT] Successfully parsed JSON, keys: {list(result.keys())}")
+            except json.JSONDecodeError as e:
+                print(f"[COMM_EXPERT] JSON decode failed: {e}")
+                print(f"[COMM_EXPERT] Raw content: {response.content}")
+                # Fallback parsing
+                result = self._parse_text_response(response.content)
+                print(f"[COMM_EXPERT] Fallback parsing result: {result}")
+            
+            # Add communication-specific validations
+            result = self._validate_communication_requirements(result)
+            print(f"[COMM_EXPERT] After validation, result type: {type(result)}")
+            
+            # Calculate communication-specific confidence
+            result["confidence"] = self._calculate_communication_confidence(result)
+            
+            print(f"[COMM_EXPERT] Process complete, returning {len(result.get('specifications', []))} specs")
+            return result
+            
+        except Exception as e:
+            print(f"[COMM_EXPERT] EXCEPTION: {type(e).__name__}: {e}")
+            import traceback
+            traceback.print_exc()
+            # Return safe fallback
+            return {
+                "specifications": [],
+                "confidence": 0.0,
+                "error": str(e),
+                "agent": "communication_expert"
+            }
     
     def get_tools(self) -> List[str]:
         """Tools available to communication expert."""

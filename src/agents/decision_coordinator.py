@@ -36,6 +36,14 @@ class DecisionCoordinatorAgent(StatelessAgent):
         """
         Process decision request: generate A/B, trigger autofill, or format response.
         """
+        # ENTRY DEBUG
+        method_name = "process"
+        print(f"[{self.__class__.__name__}] ENTER {method_name}")
+        print(f"  Input data keys: {list(input_data.keys())}")
+        print(f"  Has all_specs: {'all_specs' in input_data}")
+        if 'all_specs' in input_data:
+            print(f"  all_specs count: {len(input_data['all_specs'])}")
+        
         action_type = input_data.get("action_type", "evaluate")
         
         if action_type == "generate_abq":
@@ -115,21 +123,33 @@ class DecisionCoordinatorAgent(StatelessAgent):
     
     async def _format_chat_response(self, input_data: Dict, context: Dict) -> Dict:
         """Format a chat response based on validation results."""
+        print(f"[DecisionCoord] _format_chat_response received input_data keys: {list(input_data.keys())}")
+        
         validation_results = input_data.get("validation_results", {})
-        all_specs = input_data.get("all_specs", [])
+        
+        # Extract specs from all possible locations - CHECK all_specs FIRST!
+        specs = (
+            input_data.get('all_specs', []) or  # Check here FIRST
+            input_data.get('specifications', []) or
+            input_data.get('validation_results', {}).get('specifications', [])
+        )
+        
+        print(f"[DecisionCoord] Extracted {len(specs)} specifications from input_data")
+        if specs:
+            print(f"[DecisionCoord] First spec: {specs[0]}")
         user_profile = context.get("user_profile", {})
         expertise_level = user_profile.get("expertise_level", "intermediate")
         
-        # Format response based on expertise
+        # Format response based on expertise - now using specs variable
         if expertise_level == "expert":
             # Technical details
-            response = self._format_expert_response(validation_results, all_specs)
+            response = self._format_expert_response(validation_results, specs)
         elif expertise_level == "novice":
             # Simplified explanation
-            response = self._format_novice_response(validation_results, all_specs)
+            response = self._format_novice_response(validation_results, specs)
         else:
             # Balanced response
-            response = self._format_intermediate_response(validation_results, all_specs)
+            response = self._format_intermediate_response(validation_results, specs)
         
         return {
             "type": "chat_response",
@@ -166,7 +186,7 @@ class DecisionCoordinatorAgent(StatelessAgent):
                 "reason": "Gathering more requirements"
             }
     
-    def _format_expert_response(self, validation: Dict, all_specs: List) -> str:
+    def _format_expert_response(self, validation: Dict, specs: List) -> str:
         """Format technical response for experts."""
         controllers = validation.get('controller', {}).get('suitable_controllers', [])
         modules = validation.get('modules', {}).get('modules_required', [])
@@ -181,23 +201,23 @@ class DecisionCoordinatorAgent(StatelessAgent):
 - Total Cost: ${price:.2f}
 - Confidence: {confidence:.2%}"""
     
-    def _format_novice_response(self, validation: Dict, all_specs: List) -> str:
+    def _format_novice_response(self, validation: Dict, specs: List) -> str:
         """Format simple response for novices."""
         if validation.get('valid', False):
             return "✓ Your configuration looks good! Everything is compatible."
         else:
             return "There are some issues with your configuration. Let me help you fix them."
     
-    def _format_intermediate_response(self, validation: Dict, all_specs: List) -> str:
+    def _format_intermediate_response(self, validation: Dict, specs: List) -> str:
         """Format response based on validation results AND specifications."""
-        print(f"[DecisionCoord] Received {len(all_specs)} specifications")
+        print(f"[DecisionCoord] Received {len(specs)} specifications")
         
-        if not all_specs:
+        if not specs:
             return "I'm ready to help with your IoT requirements. Please describe what you need."
         
         # Generate contextual response based on specs
         response = "Based on your requirements:\n"
-        for spec in all_specs:
+        for spec in specs:
             constraint = spec.get('constraint', 'Unknown')
             value = spec.get('value', 'Unknown')
             response += f"- {constraint}: {value}\n"

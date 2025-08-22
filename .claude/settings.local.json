@@ -18,7 +18,10 @@
       "Bash(powershell:*)",
       "Bash(venv\\Scripts\\python.exe -m:*)",
       "Bash(.\\venv\\Scripts\\python.exe -m:*)",
-      "Bash(where python)"
+      "Bash(where python)",
+      "Bash(dir:*)",
+      "Bash(venv\\Scripts\\python.exe -m pip install:*)",
+      "Bash(.\\venv\\Scripts\\python.exe:*)"
     ],
     "defaultMode": "acceptEdits"
   }

@@ -35,9 +35,17 @@ class ValidationPipeline:
     
     async def validate(self, specifications: List[Dict], context: Dict) -> Dict:
         """
-        Run complete validation pipeline.
+        Run complete validation pipeline with debug instrumentation.
         """
+        # ENTRY DEBUG
+        method_name = "validate"
+        print(f"[{self.__class__.__name__}] ENTER {method_name}")
+        print(f"  Specifications count: {len(specifications)}")
+        if specifications:
+            print(f"  First spec: {specifications[0].get('constraint', 'Unknown')}")
+        
         validation_results = {
+            "specifications": specifications,  # PRESERVE SPECS IN RESULT
             "rounds": [],
             "final_result": None,
             "consensus_achieved": False,
@@ -68,6 +76,13 @@ class ValidationPipeline:
         validation_results["fallback_used"] = any(
             round_result.get("fallback_used", False) for round_result in validation_results["rounds"]
         )
+        
+        # EXIT DEBUG
+        print(f"[{self.__class__.__name__}] EXIT {method_name}")
+        print(f"  Result keys: {list(validation_results.keys())}")
+        print(f"  Has specifications: {'specifications' in validation_results}")
+        if 'specifications' in validation_results:
+            print(f"  Spec count in result: {len(validation_results['specifications'])}")
         
         return validation_results
     

@@ -266,12 +266,35 @@ async def process_with_orchestrator(input_data: dict):
     print(f"3. Agents completed in {checkpoint_times['after_agents'] - checkpoint_times['before_agents']:.2f}s")
     print(f"   Agent results keys: {list(agent_results.keys())}")
     
+    # Debug: Show what each agent returned
+    for agent_id, result in agent_results.items():
+        if isinstance(result, dict):
+            spec_count = len(result.get("specifications", []))
+            print(f"   [AGENT] {agent_id}: {spec_count} specs, keys: {list(result.keys())[:5]}")
+        else:
+            print(f"   [AGENT] {agent_id}: Invalid result type: {type(result)}")
+    
     # Merge results
     merged = blackboard.merge_parallel_outputs(agent_results) if agent_results else {}
+    print(f"   [MERGE] Merged keys: {list(merged.keys())}")
     
-    # Get current turn's specifications FIRST
-    current_specs = merged.get("primary", {}).get("specifications", [])
-    print(f"   [SPECS] Current turn specs: {len(current_specs)}")
+    # Get current turn's specifications from ALL agents
+    current_specs = []
+    
+    # First get from primary (io_expert)
+    if "primary" in merged and isinstance(merged["primary"], dict):
+        primary_specs = merged["primary"].get("specifications", [])
+        current_specs.extend(primary_specs)
+        print(f"   [SPECS] Primary (IO) specs: {len(primary_specs)}")
+    
+    # Then get from other agents
+    for agent_id in ["system_expert", "communication_expert"]:
+        if agent_id in merged and isinstance(merged[agent_id], dict):
+            agent_specs = merged[agent_id].get("specifications", [])
+            current_specs.extend(agent_specs)
+            print(f"   [SPECS] {agent_id} specs: {len(agent_specs)}")
+    
+    print(f"   [SPECS] Total current turn specs: {len(current_specs)}")
     
     # ACCUMULATE specifications (not replace!)
     all_specs = list(previous_state["accumulated_specs"])
