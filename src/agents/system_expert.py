@@ -18,7 +18,7 @@ class SystemExpertAgent(StatelessAgent):
     def __init__(self, blackboard, message_bus):
         super().__init__(
             agent_id="system_expert",
-            model="gpt-4",
+            model="gpt-4o",
             blackboard=blackboard,
             message_bus=message_bus
         )
@@ -27,7 +27,10 @@ class SystemExpertAgent(StatelessAgent):
         self.llm = ChatOpenAI(
             model=self.model,
             temperature=0.2,  # Low temperature for consistency
-            max_tokens=1500
+            max_tokens=1500,
+            model_kwargs={
+                "response_format": {"type": "json_object"}
+            }
         )
         
         # Define prompt template
@@ -43,23 +46,7 @@ class SystemExpertAgent(StatelessAgent):
             - System redundancy
             
             You must output a JSON with the following structure:
-            {
-                "specifications": [
-                    {
-                        "type": "SR/SSR/CSR",
-                        "constraint": "description",
-                        "value": "specific value",
-                        "strength": 1000/100/10/1,
-                        "reasoning": "why this is needed"
-                    }
-                ],
-                "dependencies": {
-                    "io": ["I/O requirements that affect system needs"],
-                    "communication": ["communication requirements that affect system needs"]
-                },
-                "confidence": 0.0-1.0,
-                "requires_clarification": ["list of ambiguous requirements"]
-            }"""),
+            {"specifications": [{"type": "SR/SSR/CSR", "constraint": "description", "value": "specific value", "strength": 1000, "reasoning": "why this is needed"}], "dependencies": {"io": ["I/O requirements that affect system needs"], "communication": ["communication requirements that affect system needs"]}, "confidence": 0.0-1.0, "requires_clarification": ["list of ambiguous requirements"]}"""),
             ("human", "{input}")
         ])
         
@@ -71,9 +58,9 @@ class SystemExpertAgent(StatelessAgent):
         io_dependencies = await self._check_io_dependencies(context)
         
         # Extract system requirements using LLM
-        response = await self.llm.ainvoke(
-            self.prompt.format_messages(input=input_data.get("user_input", ""))
-        )
+        # Format messages and invoke synchronously
+        messages = self.prompt.format_messages(input=input_data.get("user_input", ""))
+        response = self.llm.invoke(messages)
         
         # Parse LLM response
         try:

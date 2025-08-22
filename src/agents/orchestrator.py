@@ -86,19 +86,22 @@ class OrchestratorAgent(StatelessAgent):
         }
         
         # Check for I/O content (primary)
-        io_keywords = ["input", "output", "channel", "digital", "analog", "i/o", "dio", "aio"]
+        io_keywords = ["input", "output", "channel", "digital", "analog", "i/o", "dio", "aio", 
+                       "sensor", "rtd", "temperature", "thermocouple", "measurement", "monitor"]
         if any(keyword in user_input for keyword in io_keywords):
             routing["has_io_content"] = True
             routing["confidence"] += 0.2
         
         # Check for system content
-        system_keywords = ["processor", "memory", "performance", "speed", "cpu", "ram"]
+        system_keywords = ["processor", "memory", "performance", "speed", "cpu", "ram", 
+                          "real-time", "fast", "processing", "latency"]
         if any(keyword in user_input for keyword in system_keywords):
             routing["has_system_content"] = True
             routing["confidence"] += 0.15
         
         # Check for communication content
-        comm_keywords = ["protocol", "modbus", "ethernet", "network", "communication"]
+        comm_keywords = ["protocol", "modbus", "ethernet", "network", "communication",
+                        "tcp", "ip", "serial", "wireless", "connectivity"]
         if any(keyword in user_input for keyword in comm_keywords):
             routing["has_comm_content"] = True
             routing["confidence"] += 0.15
@@ -117,10 +120,14 @@ class OrchestratorAgent(StatelessAgent):
         """Select which agents to activate based on routing analysis."""
         agents = []
         
+        # Debug: Log routing decision
+        print(f"[ORCHESTRATOR] Routing flags - IO: {routing.get('has_io_content')}, System: {routing.get('has_system_content')}, Comm: {routing.get('has_comm_content')}")
+        
         # Always start with I/O if no specific content detected
         if not any([routing["has_io_content"], 
                    routing["has_system_content"], 
                    routing["has_comm_content"]]):
+            print("[ORCHESTRATOR] No specific content detected, defaulting to io_expert")
             agents.append("io_expert")
         else:
             # Add agents based on content

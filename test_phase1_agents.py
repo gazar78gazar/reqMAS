@@ -49,7 +49,7 @@ def test_phase1_activation():
                 
                 # Check which agents were activated
                 routing = result.get('routing', {})
-                activated = routing.get('activated_agents', [])
+                activated = result.get('activated_agents', [])
                 
                 print(f"  Routing Decision:")
                 print(f"    - Has I/O content: {routing.get('has_io_content', False)}")

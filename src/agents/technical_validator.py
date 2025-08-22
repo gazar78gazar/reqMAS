@@ -7,6 +7,7 @@ from typing import Dict, List, Any, Optional
 from agents.base_agent import StatelessAgent
 from data.data_loader import data_loader
 import asyncio
+import re
 
 class TechnicalValidator(StatelessAgent):
     """
@@ -82,21 +83,25 @@ class TechnicalValidator(StatelessAgent):
         }
         
         for spec in specifications:
-            constraint = spec.get("constraint", "")
-            value = spec.get("value", 0)
+            constraint = spec.get("constraint", "").lower()
+            value = spec.get("value", "")
             
-            if "analog_input" in constraint or "analog_io" in constraint:
-                io_counts["analog_input"] += int(value)
-            elif "analog_output" in constraint:
-                io_counts["analog_output"] += int(value)
-            elif "digital_input" in constraint or "digital_io" in constraint:
-                io_counts["digital_input"] += int(value)
-            elif "digital_output" in constraint:
-                io_counts["digital_output"] += int(value)
+            # Extract numeric value from string
+            numeric_match = re.findall(r'\d+', str(value))
+            numeric_value = int(numeric_match[0]) if numeric_match else 0
+            
+            if "digital_input" in constraint or "di_" in constraint:
+                io_counts["digital_input"] += numeric_value
+            elif "digital_output" in constraint or "do_" in constraint:
+                io_counts["digital_output"] += numeric_value
+            elif "analog_input" in constraint or "ai_" in constraint:
+                io_counts["analog_input"] += numeric_value
+            elif "analog_output" in constraint or "ao_" in constraint:
+                io_counts["analog_output"] += numeric_value
             elif "operating_temperature_min" in constraint:
-                io_counts["min_operating_temp"] = int(value)
+                io_counts["min_operating_temp"] = numeric_value
             elif "operating_temperature_max" in constraint:
-                io_counts["max_operating_temp"] = int(value)
+                io_counts["max_operating_temp"] = numeric_value
         
         io_counts["total_io"] = sum(v for k, v in io_counts.items() 
                                    if k in ["analog_input", "analog_output", "digital_input", "digital_output"])
@@ -201,9 +206,13 @@ class TechnicalValidator(StatelessAgent):
             # Check against constraint rules
             if constraint_type in self.constraints:
                 rule = self.constraints[constraint_type]
-                if "max" in rule and int(value) > rule["max"]:
+                # Extract numeric value from string
+                numeric_match = re.findall(r'\d+', str(value))
+                numeric_value = int(numeric_match[0]) if numeric_match else 0
+                
+                if "max" in rule and numeric_value > rule["max"]:
                     violations.append(f"{constraint_type} exceeds max: {rule['max']}")
-                if "min" in rule and int(value) < rule["min"]:
+                if "min" in rule and numeric_value < rule["min"]:
                     violations.append(f"{constraint_type} below min: {rule['min']}")
         
         return {

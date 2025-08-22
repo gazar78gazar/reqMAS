@@ -4,6 +4,7 @@ Fallback Handler - Provides fallback responses when agents fail
 
 from typing import Dict, List, Any, Optional
 from datetime import datetime
+import re
 
 class FallbackHandler:
     """
@@ -96,7 +97,11 @@ class FallbackHandler:
         total_io = 0
         for spec in specifications:
             if "io" in spec.get("constraint", "").lower():
-                total_io += int(spec.get("value", 0))
+                value = spec.get("value", 0)
+                # Extract numeric value from string
+                numeric_match = re.findall(r'\d+', str(value))
+                if numeric_match:
+                    total_io += int(numeric_match[0])
         
         # Select appropriate controller
         if total_io <= 16:

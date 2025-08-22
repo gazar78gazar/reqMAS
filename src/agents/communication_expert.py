@@ -18,7 +18,7 @@ class CommunicationExpertAgent(StatelessAgent):
     def __init__(self, blackboard, message_bus):
         super().__init__(
             agent_id="communication_expert",
-            model="gpt-4o-mini",
+            model="gpt-4o",
             blackboard=blackboard,
             message_bus=message_bus
         )
@@ -27,7 +27,10 @@ class CommunicationExpertAgent(StatelessAgent):
         self.llm = ChatOpenAI(
             model=self.model,
             temperature=0.2,  # Low temperature for consistency
-            max_tokens=1500
+            max_tokens=1500,
+            model_kwargs={
+                "response_format": {"type": "json_object"}
+            }
         )
         
         # Define prompt template
@@ -43,23 +46,7 @@ class CommunicationExpertAgent(StatelessAgent):
             - Integration requirements
             
             You must output a JSON with the following structure:
-            {
-                "specifications": [
-                    {
-                        "type": "SR/SSR/CSR",
-                        "constraint": "description",
-                        "value": "specific value",
-                        "strength": 1000/100/10/1,
-                        "reasoning": "why this is needed"
-                    }
-                ],
-                "dependencies": {
-                    "io": ["I/O requirements that affect communication"],
-                    "system": ["system requirements that affect communication"]
-                },
-                "confidence": 0.0-1.0,
-                "requires_clarification": ["list of ambiguous requirements"]
-            }"""),
+            {"specifications": [{"type": "SR/SSR/CSR", "constraint": "description", "value": "specific value", "strength": 1000, "reasoning": "why this is needed"}], "dependencies": {"io": ["I/O requirements that affect communication"], "system": ["system requirements that affect communication"]}, "confidence": 0.0-1.0, "requires_clarification": ["list of ambiguous requirements"]}"""),
             ("human", "{input}")
         ])
         
@@ -71,9 +58,9 @@ class CommunicationExpertAgent(StatelessAgent):
         dependencies = await self._check_dependencies(context)
         
         # Extract communication requirements using LLM
-        response = await self.llm.ainvoke(
-            self.prompt.format_messages(input=input_data.get("user_input", ""))
-        )
+        # Format messages and invoke synchronously
+        messages = self.prompt.format_messages(input=input_data.get("user_input", ""))
+        response = self.llm.invoke(messages)
         
         # Parse LLM response
         try:

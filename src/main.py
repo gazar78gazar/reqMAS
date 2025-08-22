@@ -20,6 +20,8 @@ from core.blackboard import ReflectiveBlackboard
 from core.message_bus import EventDrivenMessageBus
 from agents.orchestrator import OrchestratorAgent
 from agents.io_expert import IOExpertAgent
+from agents.system_expert import SystemExpertAgent
+from agents.communication_expert import CommunicationExpertAgent
 # Phase 2 imports
 from validation.validation_pipeline import ValidationPipeline
 from agents.decision_coordinator import DecisionCoordinatorAgent
@@ -38,8 +40,8 @@ message_bus = EventDrivenMessageBus()
 # Initialize agents
 orchestrator = OrchestratorAgent(blackboard, message_bus)
 io_expert = IOExpertAgent(blackboard, message_bus)
-# system_expert = SystemExpertAgent(blackboard, message_bus)  # Phase 1
-# comm_expert = CommunicationExpertAgent(blackboard, message_bus)  # Phase 1
+system_expert = SystemExpertAgent(blackboard, message_bus)  # Phase 1
+comm_expert = CommunicationExpertAgent(blackboard, message_bus)  # Phase 1
 
 # Phase 2 components
 validation_pipeline = ValidationPipeline(blackboard=blackboard, message_bus=message_bus)
@@ -66,8 +68,8 @@ print("=== END COMPONENT STATUS ===\n")
 agent_registry = {
     "orchestrator": orchestrator,
     "io_expert": io_expert,
-    # "system_expert": system_expert,
-    # "communication_expert": comm_expert
+    "system_expert": system_expert,
+    "communication_expert": comm_expert
 }
 
 @app.on_event("startup")
@@ -262,10 +264,13 @@ async def process_with_orchestrator(input_data: dict):
     # Merge results
     merged = blackboard.merge_parallel_outputs(agent_results) if agent_results else {}
     
+    # Get current turn's specifications FIRST
+    current_specs = merged.get("primary", {}).get("specifications", [])
+    
     # ACCUMULATE specifications (not replace!)
     all_specs = list(previous_state["accumulated_specs"])
-    if merged.get("primary", {}).get("specifications"):
-        all_specs.extend(merged["primary"]["specifications"])
+    if current_specs:
+        all_specs.extend(current_specs)
     
     # UPDATE conversation history
     previous_state["messages"].append({
@@ -293,7 +298,8 @@ async def process_with_orchestrator(input_data: dict):
     print(f"4. Generating conversational response...")
     
     # Use Phase 2 intelligent response generation
-    if len(all_specs) > 0:
+    # Run Phase 2 if we have accumulated specs OR new specs this turn
+    if len(all_specs) > 0 or len(current_specs) > 0:
         # Run validation
         validation_result = await validation_pipeline.validate(all_specs, context)
         
