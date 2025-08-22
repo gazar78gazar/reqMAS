@@ -234,28 +234,33 @@ async def process_with_orchestrator(input_data: dict):
     # First, let orchestrator analyze and route with context
     routing_result = await orchestrator.process(input_data, context)
     
-    # Extract agents to activate
+    # Extract routing information and agents to activate
+    routing = routing_result.get("routing", {})
     agents_to_activate = routing_result.get("activated_agents", [])
+    
+    print(f"[ORCHESTRATOR] Routing flags - IO: {routing.get('has_io_content')}, System: {routing.get('has_system_content')}, Comm: {routing.get('has_comm_content')}")
     
     checkpoint_times['before_agents'] = time.time()
     print(f"2. Starting agent execution at {checkpoint_times['before_agents'] - checkpoint_times['start']:.2f}s")
     print(f"   Agents to activate: {agents_to_activate}")
     
-    # Process with selected agents
+    # Execute agents in parallel
     agent_results = {}
-    for agent_id in agents_to_activate:
-        if agent_id in agent_registry:
-            agent = agent_registry[agent_id]
-            try:
-                # Pass full context to each agent
-                agent_result = await agent.execute(input_data)
-                agent_results[agent_id] = agent_result
-            except Exception as e:
-                agent_results[agent_id] = {
-                    "status": "error",
-                    "error": str(e),
-                    "confidence": 0.0
-                }
+    if agents_to_activate:
+        tasks = []
+        for agent_id in agents_to_activate:
+            if agent_id in agent_registry:
+                agent = agent_registry[agent_id]
+                tasks.append(agent.execute(input_data))
+        
+        if tasks:
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            for agent_id, result in zip(agents_to_activate, results):
+                if isinstance(result, Exception):
+                    print(f"{agent_id} processing error: {result}")
+                    agent_results[agent_id] = {"error": str(result), "specifications": []}
+                else:
+                    agent_results[agent_id] = result
     
     checkpoint_times['after_agents'] = time.time()
     print(f"3. Agents completed in {checkpoint_times['after_agents'] - checkpoint_times['before_agents']:.2f}s")
@@ -266,11 +271,14 @@ async def process_with_orchestrator(input_data: dict):
     
     # Get current turn's specifications FIRST
     current_specs = merged.get("primary", {}).get("specifications", [])
+    print(f"   [SPECS] Current turn specs: {len(current_specs)}")
     
     # ACCUMULATE specifications (not replace!)
     all_specs = list(previous_state["accumulated_specs"])
+    print(f"   [SPECS] Previous accumulated specs: {len(all_specs)}")
     if current_specs:
         all_specs.extend(current_specs)
+        print(f"   [SPECS] Total accumulated specs after extension: {len(all_specs)}")
     
     # UPDATE conversation history
     previous_state["messages"].append({
@@ -299,7 +307,9 @@ async def process_with_orchestrator(input_data: dict):
     
     # Use Phase 2 intelligent response generation
     # Run Phase 2 if we have accumulated specs OR new specs this turn
+    print(f"   [PHASE2] all_specs count: {len(all_specs)}, current_specs count: {len(current_specs)}")
     if len(all_specs) > 0 or len(current_specs) > 0:
+        print(f"   [PHASE2] Running Phase 2 intelligent response generation")
         # Run validation
         validation_result = await validation_pipeline.validate(all_specs, context)
         
@@ -309,6 +319,8 @@ async def process_with_orchestrator(input_data: dict):
             conflicts = validation_pipeline.detect_conflicts(validation_result)
         
         # Generate intelligent response
+        print(f"   [PHASE2] Validation result keys: {list(validation_result.keys()) if validation_result else 'None'}")
+        print(f"   [PHASE2] Conflicts: {len(conflicts)}")
         decision_result = await decision_coordinator.process({
             "action_type": "format_response",
             "validation_results": validation_result,

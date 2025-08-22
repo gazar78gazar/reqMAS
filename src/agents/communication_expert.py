@@ -106,6 +106,16 @@ class CommunicationExpertAgent(StatelessAgent):
     
     def _validate_communication_requirements(self, result: Dict) -> Dict:
         """Validate communication specifications for consistency."""
+        # Handle case where result might be a string
+        if isinstance(result, str):
+            try:
+                result = json.loads(result)
+            except json.JSONDecodeError:
+                return {"specifications": [], "confidence": 0.0, "error": "Invalid JSON response"}
+        
+        if not isinstance(result, dict):
+            return {"specifications": [], "confidence": 0.0, "error": "Invalid result type"}
+            
         specs = result.get("specifications", [])
         
         # Basic validation for Phase 1

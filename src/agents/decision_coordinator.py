@@ -189,8 +189,11 @@ class DecisionCoordinatorAgent(StatelessAgent):
     
     def _format_intermediate_response(self, validation: Dict) -> str:
         """Format balanced response for intermediate users."""
+        print(f"   [DecisionCoord] _format_intermediate_response called with: {list(validation.keys()) if validation else 'None'}")
+        
         # Check if validation is empty or has no specs
         if not validation or not validation.get('specifications'):
+            print(f"   [DecisionCoord] No specifications found, returning generic response")
             return "I'm ready to help with your IoT requirements. Please describe what you need."
         
         valid = validation.get('valid', False)
